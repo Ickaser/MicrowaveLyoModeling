@@ -1,0 +1,32 @@
+user: Ahmad Darwish
+# Lyophilizer: LyoStar, REVO, MicroFD, or LabConco
+lyophilizer: LyoStar3
+# Vial size and count in the run
+containers:
+  type: SCHOTT 6R
+  count: 30
+fill: 3.0 # Fill in mL
+concentration: 0.05 # Solids content, in w/v % (e.g. .05g/mL w
+formulation: Mannitol
+# Controlled ice nucleation
+CIN: false
+# Annealing after freezing
+annealing: false
+# Freeze-thaw cycle only
+freezethaw: false
+# Include RF heating details, as necessary.
+RF:
+  (w): 30.0
+  (ghz): 18.0
+closed loop: false
+# freezethaw:
+comments: '36 W for 5.8 hours, 24 W for 4.5 hours '
+
+timestamp: 2024-11-20 10:59
+original filenames:
+- C:/Users/iwheeler/OneDrive - 
+  purdue.edu/Documents/LyoResearch/NIIMBL_RF/cycledata/mannitol_pvary_fiberoptic.csv
+- C:/Users/iwheeler/OneDrive - purdue.edu/Documents/LyoResearch/NIIMBL_RF/cycledata/mannitol_pvary_lyo.csv
+- C:/Users/iwheeler/OneDrive - purdue.edu/Documents/LyoResearch/NIIMBL_RF/cycledata/mannitol_pvary_mtsflex.csv
+start date: 2023-02-08
+project: NIIMBL RF
