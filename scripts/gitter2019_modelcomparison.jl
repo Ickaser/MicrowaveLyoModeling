@@ -100,7 +100,7 @@ end
 # -----------------
 # Braatz group analytical model
 
-const AM = LyoProntoNIIMBLRF.AnalyticalModel
+const AM = MicrowaveLyoModeling.AnalyticalModel
 
 # They assume a sublimation temperature of 256.15K
 # This is equivalent to chamber pressure of 1300 μbar, since they do no mass transfer resistance

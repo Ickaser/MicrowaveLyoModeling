@@ -1,9 +1,9 @@
-# LyoProntoNIIMBLRF
+# MicrowaveLyoModeling
 
 This code base is using the [Julia Language](https://julialang.org/) and
 [DrWatson](https://juliadynamics.github.io/DrWatson.jl/stable/)
 to make a reproducible scientific project named
-> LyoProntoNIIMBLRF
+> MicrowaveLyoModeling
 
 To (locally) reproduce this project, do the following:
 
@@ -26,7 +26,7 @@ Git repository, although this is not always done.
 You may notice that most scripts start with the commands:
 ```julia
 using DrWatson
-@quickactivate :LyoProntoNIIMBLRF
+@quickactivate :MicrowaveLyoModeling
 ```
 which auto-activate the project and enable local path handling from DrWatson.
 

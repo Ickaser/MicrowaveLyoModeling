@@ -1,5 +1,5 @@
 using DrWatson
-@quickactivate :LyoProntoNIIMBLRF
+@quickactivate :MicrowaveLyoModeling
 
 # pythonplot()
 plot_defaults_lprf()

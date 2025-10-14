@@ -1,4 +1,4 @@
-module LyoProntoNIIMBLRF
+module MicrowaveLyoModeling
 
 using Reexport
 @reexport using LyoPronto

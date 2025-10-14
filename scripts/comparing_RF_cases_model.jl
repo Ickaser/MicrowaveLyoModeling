@@ -1,5 +1,5 @@
 using DrWatson
-@quickactivate :LyoProntoNIIMBLRF
+@quickactivate :MicrowaveLyoModeling
 
 using Latexify
 using UnitfulLatexify
