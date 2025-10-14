@@ -29,14 +29,6 @@ const objf_KBB = OptimizationFunction(LyoPronto.obj_pd, AutoForwardDiff(chunksiz
 const objf_Rp = OptimizationFunction(LyoPronto.obj_pd, AutoForwardDiff(chunksize=3))
 const objf_KRp = OptimizationFunction(LyoPronto.obj_pd, AutoForwardDiff(chunksize=4))
 export objf_KBB, objf_Rp, objf_KRp
-export KBB_transform_basic
-using LyoPronto.TransformVariables: logit
-function KBB_transform_basic(Kvwfg, Bfg, Bvwg)
-    tr = as((Kvwf = TVScale(Kvwfg) ∘ TVScale(1e2) ∘ TVLogistic() ∘ TVShift(logit(1e-2)),
-        Bf = TVScale(Bfg) ∘ TVScale(1e4) ∘ TVLogistic() ∘ TVShift(logit(1e-4)),
-        Bvw = TVScale(Bvwg) ∘ TVScale(1e4) ∘ TVLogistic() ∘ TVShift(logit(1e-4)) ))
-    return tr
-end
 
 include(srcdir("plotrecipes.jl"))
 include(srcdir("braatz.jl"))
