@@ -1,0 +1,3 @@
+
+# Simulation output binary files aren't good for version control
+*.jld2
