@@ -14,7 +14,6 @@ LevelSetSublimation = "93c9dee1-5b16-4b35-bfc1-a042def24bdf"
 LineSearches = "d3d80556-e9d4-5f37-9878-2ab0fcc64255"
 LyoPronto = "86014da0-a5b3-40a4-ad76-3e66dfc3e269"
 NonlinearSolve = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
-OptimizationOptimJL = "36348300-93cb-4f02-beb5-3c3902f8871e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
@@ -36,5 +35,4 @@ LyoPronto = {url = "https://github.com/LyoHUB/LyoPronto.jl"}
 [compat]
 DrWatson = "2.12.5"
 LyoPronto = "0.3"
-OptimizationOptimJL = "0.4.6"
 julia = "1.11.0"
