@@ -10,6 +10,15 @@ This project is structured as follows:
 - The lumped capacitance model is implemented in [LyoPronto.jl](https://lyohub.github.io/LyoPronto.jl/dev/).
 - The level set model is implemented in [LevelSetSublimation.jl](https://github.com/Ickaser/LevelSetSublimation.jl), which has LyoPronto.jl as a dependency.
 - This "package", in the `src` folder, implements some historical versions of the lumped capacitance model and the model presented in [Srisuma et al., 2023](https://doi.org/10.1016/j.compchemeng.2023.108318).
+- This package reexports the following Julia libraries (among others), which are liberally used in the analysis scripts:
+  - LyoPronto
+  - DrWatson
+  - LevelSetSublimation
+  - Unitful
+  - Plots
+  - CSV, TypedTables
+  - NonlinearSolve
+  - OptimizationOptimJL
 
 To (locally) reproduce this project, do the following:
 
