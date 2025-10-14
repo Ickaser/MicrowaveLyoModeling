@@ -2,7 +2,7 @@
 
 julia_version = "1.11.1"
 manifest_format = "2.0"
-project_hash = "22c42e6fb94b165e5f4a202f3e7673d340f93618"
+project_hash = "ad8958c73e56c29db3835d2e37b8845321d894c7"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "27cecae79e5cc9935255f90c53bb831cc3c870d7"
@@ -25,11 +25,6 @@ weakdeps = ["ChainRulesCore", "Test"]
     [deps.AbstractFFTs.extensions]
     AbstractFFTsChainRulesCoreExt = "ChainRulesCore"
     AbstractFFTsTestExt = "Test"
-
-[[deps.AbstractTrees]]
-git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
-uuid = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
-version = "0.4.5"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -358,12 +353,6 @@ deps = ["JSON3", "Markdown", "MicroMamba", "Pidfile", "Pkg", "Preferences", "Scr
 git-tree-sha1 = "bd491d55b97a036caae1d78729bdb70bf7dababc"
 uuid = "992eb4ea-22a4-4c89-a5bb-47a3300528ab"
 version = "0.2.33"
-
-[[deps.ConsoleProgressMonitor]]
-deps = ["Logging", "ProgressMeter"]
-git-tree-sha1 = "3ab7b2136722890b9af903859afcf457fa3059e8"
-uuid = "88cd18e8-d9cc-4ea6-8889-5259c0d15c8b"
-version = "0.1.2"
 
 [[deps.ConstructionBase]]
 git-tree-sha1 = "b4b092499347b18a015186eae3042f72267106cb"
@@ -1143,16 +1132,9 @@ deps = ["Artifacts", "Pkg"]
 uuid = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
 version = "1.11.0"
 
-[[deps.LeftChildRightSiblingTrees]]
-deps = ["AbstractTrees"]
-git-tree-sha1 = "95ba48564903b43b2462318aa243ee79d81135ff"
-uuid = "1d6d02ad-be62-4b6b-8a6d-2f90e265016e"
-version = "0.2.1"
-
 [[deps.LevelSetSublimation]]
 deps = ["ADTypes", "Accessors", "CSV", "ComponentArrays", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "PrettyTables", "PythonPlot", "Reexport", "Roots", "SavitzkyGolay", "SparseArrays", "Sparspak", "SpecialFunctions", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
 git-tree-sha1 = "28b4ce8fa21f98fe1cdb81b3fb7128a3039400cd"
-repo-rev = "main"
 repo-url = "https://github.com/Ickaser/LevelSetSublimation.jl"
 uuid = "93c9dee1-5b16-4b35-bfc1-a042def24bdf"
 version = "0.0.0"
@@ -1328,7 +1310,6 @@ version = "1.2.0"
 deps = ["ADTypes", "Accessors", "CSV", "ColorTypes", "ConcreteStructs", "ConstructionBase", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "LinearAlgebra", "OrdinaryDiffEqNonlinearSolve", "OrdinaryDiffEqRosenbrock", "PrecompileTools", "RecipesBase", "Reexport", "Roots", "SavitzkyGolay", "SpecialFunctions", "TransformVariables", "Unitful"]
 git-tree-sha1 = "6ebacaa3df083cf0df7eed73ca81ac35bf3ac7ae"
 path = "C:\\Users\\iwheeler\\.julia\\dev\\LyoPronto"
-repo-rev = "main"
 repo-url = "https://github.com/LyoHUB/LyoPronto.jl"
 uuid = "86014da0-a5b3-40a4-ad76-3e66dfc3e269"
 version = "0.3.0"
@@ -1596,12 +1577,6 @@ version = "1.13.2"
     [deps.Optim.weakdeps]
     MathOptInterface = "b8f27783-ece8-5eb3-8dc8-9495eed66fee"
 
-[[deps.Optimization]]
-deps = ["ADTypes", "ArrayInterface", "ConsoleProgressMonitor", "DocStringExtensions", "LinearAlgebra", "Logging", "LoggingExtras", "OptimizationBase", "Printf", "ProgressLogging", "Reexport", "SciMLBase", "SparseArrays", "TerminalLoggers"]
-git-tree-sha1 = "6b74af28fe70d6c828746376549c357cf88d3c3a"
-uuid = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
-version = "5.0.0"
-
 [[deps.OptimizationBase]]
 deps = ["ADTypes", "ArrayInterface", "DifferentiationInterface", "DocStringExtensions", "FastClosures", "LinearAlgebra", "PDMats", "Reexport", "SciMLBase", "SparseArrays", "SparseConnectivityTracer", "SparseMatrixColorings"]
 git-tree-sha1 = "2fdb3d6dbaa861a7bafbe9d4cc04e9121ee47ed9"
@@ -1844,18 +1819,6 @@ version = "3.1.0"
 [[deps.Printf]]
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
-version = "1.11.0"
-
-[[deps.ProgressLogging]]
-deps = ["Logging", "SHA", "UUIDs"]
-git-tree-sha1 = "d95ed0324b0799843ac6f7a6a85e65fe4e5173f0"
-uuid = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
-version = "0.1.5"
-
-[[deps.ProgressMeter]]
-deps = ["Distributed", "Printf"]
-git-tree-sha1 = "fbb92c6c56b34e1a2c4c36058f68f332bec840e7"
-uuid = "92933f4c-e287-5a05-a399-4b506db050ca"
 version = "1.11.0"
 
 [[deps.PtrArrays]]
@@ -2442,12 +2405,6 @@ deps = ["LinearAlgebra"]
 git-tree-sha1 = "1feb45f88d133a655e001435632f019a9a1bcdb6"
 uuid = "62fd8b95-f654-4bbd-a8a5-9c27f68ccd50"
 version = "0.1.1"
-
-[[deps.TerminalLoggers]]
-deps = ["LeftChildRightSiblingTrees", "Logging", "Markdown", "Printf", "ProgressLogging", "UUIDs"]
-git-tree-sha1 = "f133fab380933d042f6796eda4e130272ba520ca"
-uuid = "5d786b92-1e48-4d6f-9151-6b4477ca9bed"
-version = "0.1.7"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
