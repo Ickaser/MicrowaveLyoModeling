@@ -2,6 +2,7 @@ module MicrowaveLyoModeling
 
 using Reexport
 @reexport using LyoPronto
+@reexport using LevelSetSublimation
 @reexport using DrWatson
 @reexport using Unitful
 @reexport using Plots
@@ -10,7 +11,6 @@ using Reexport
 @reexport using CSV
 @reexport using TypedTables
 @reexport using NonlinearSolve
-@reexport using Optimization
 @reexport using OptimizationOptimJL
 @reexport using SavitzkyGolay
 @reexport using LaTeXStrings
