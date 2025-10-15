@@ -284,7 +284,7 @@ end
 
 # ----------------- Figure 1c, Braatz group comparison
 
-# const AM = LyoProntoNIIMBLRF.AnalyticalModel
+# const AM = MicrowaveLyoModeling.AnalyticalModel
 # # They assume a sublimation temperature of 256.15K
 # # This is equivalent to chamber pressure of 1300 μbar, since they do no mass transfer resistance
 # # I will instead use measured pressures to get temperature

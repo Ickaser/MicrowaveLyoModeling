@@ -2,7 +2,7 @@
 
 julia_version = "1.11.1"
 manifest_format = "2.0"
-project_hash = "b7d12f829d3349527b1e7c22021a9baef0cde948"
+project_hash = "0336011bbc0f37bb5768a24862bcb6212657aec0"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "27cecae79e5cc9935255f90c53bb831cc3c870d7"
@@ -798,9 +798,9 @@ version = "1.3.7"
 
 [[deps.ForwardDiff]]
 deps = ["CommonSubexpressions", "DiffResults", "DiffRules", "LinearAlgebra", "LogExpFunctions", "NaNMath", "Preferences", "Printf", "Random", "SpecialFunctions"]
-git-tree-sha1 = "dc41303865a16274ecb8450c220021ce1e0cf05f"
+git-tree-sha1 = "ba6ce081425d0afb2bedd00d9884464f764a9225"
 uuid = "f6369f11-7733-5829-9624-2563aa707210"
-version = "1.2.1"
+version = "1.2.2"
 weakdeps = ["StaticArrays"]
 
     [deps.ForwardDiff.extensions]
@@ -1133,11 +1133,12 @@ uuid = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
 version = "1.11.0"
 
 [[deps.LevelSetSublimation]]
-deps = ["ADTypes", "Accessors", "CSV", "ComponentArrays", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "PrettyTables", "PythonPlot", "Reexport", "Roots", "SavitzkyGolay", "SparseArrays", "Sparspak", "SpecialFunctions", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
-git-tree-sha1 = "28b4ce8fa21f98fe1cdb81b3fb7128a3039400cd"
+deps = ["ADTypes", "Accessors", "CSV", "ComponentArrays", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "PrettyTables", "PythonPlot", "Reexport", "Roots", "SparseArrays", "Sparspak", "SpecialFunctions", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
+git-tree-sha1 = "3593d6734b703431835a3b44a14882f8bdc12e0a"
+repo-rev = "main"
 repo-url = "https://github.com/Ickaser/LevelSetSublimation.jl"
 uuid = "93c9dee1-5b16-4b35-bfc1-a042def24bdf"
-version = "0.0.0"
+version = "0.1.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -1308,8 +1309,9 @@ version = "1.2.0"
 
 [[deps.LyoPronto]]
 deps = ["ADTypes", "Accessors", "CSV", "ColorTypes", "ConcreteStructs", "ConstructionBase", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "LinearAlgebra", "OrdinaryDiffEqNonlinearSolve", "OrdinaryDiffEqRosenbrock", "PrecompileTools", "RecipesBase", "Reexport", "Roots", "SavitzkyGolay", "SpecialFunctions", "TransformVariables", "Unitful"]
-git-tree-sha1 = "6ebacaa3df083cf0df7eed73ca81ac35bf3ac7ae"
+git-tree-sha1 = "93ac25ec4572df643e14c4dee6d7dc94e978ec26"
 path = "C:\\Users\\iwheeler\\.julia\\dev\\LyoPronto"
+repo-rev = "main"
 repo-url = "https://github.com/LyoHUB/LyoPronto.jl"
 uuid = "86014da0-a5b3-40a4-ad76-3e66dfc3e269"
 version = "0.3.0"
@@ -2119,9 +2121,9 @@ version = "1.11.0"
 
 [[deps.SparseMatrixColorings]]
 deps = ["ADTypes", "DocStringExtensions", "LinearAlgebra", "PrecompileTools", "Random", "SparseArrays"]
-git-tree-sha1 = "9de43e0b9b976f1019bf7a879a686c4514520078"
+git-tree-sha1 = "d3f3b7bb8a561b5ff20ee7cf9574841ee4e4e137"
 uuid = "0a514795-09f3-496d-8182-132a7b665d35"
-version = "0.4.21"
+version = "0.4.22"
 
     [deps.SparseMatrixColorings.extensions]
     SparseMatrixColoringsCUDAExt = "CUDA"
@@ -2292,9 +2294,9 @@ version = "7.7.0+0"
 
 [[deps.SymbolicIndexingInterface]]
 deps = ["Accessors", "ArrayInterface", "RuntimeGeneratedFunctions", "StaticArraysCore"]
-git-tree-sha1 = "617400a198bd433f921ca2a4e89999f835dd3fde"
+git-tree-sha1 = "94c58884e013efff548002e8dc2fdd1cb74dfce5"
 uuid = "2efcf032-c050-4f8e-a9bb-153293bab1f5"
-version = "0.3.45"
+version = "0.3.46"
 weakdeps = ["PrettyTables"]
 
     [deps.SymbolicIndexingInterface.extensions]

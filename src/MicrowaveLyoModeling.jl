@@ -12,6 +12,7 @@ using Reexport
 @reexport using TypedTables
 @reexport using NonlinearSolve
 @reexport using SavitzkyGolay
+@reexport using TransformVariables
 @reexport using LaTeXStrings
 @reexport using DataInterpolations: LinearInterpolation, ExtrapolationType, ConstantInterpolation
 @reexport using Accessors

@@ -318,7 +318,7 @@ savefig(plotsdir("M1_allLC_params.pdf"))
 # -----------------
 # Braatz group analytical model
 
-const AM = LyoProntoNIIMBLRF.AnalyticalModel
+const AM = MicrowaveLyoModeling.AnalyticalModel
 
 Tm = find_zero( T->LyoPronto.calc_psub(T*u"K")-pch(0), 250)*u"K"
 Kv = K_shf_f(pch(0))
