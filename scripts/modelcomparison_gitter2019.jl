@@ -151,19 +151,19 @@ end
 p0_KRp = vcat([-0.5, -2, -4], [-2.1, -1.0, 0.0, 1.0])
 p0_KRp = vcat([-0.5, -2, -4], [-1.1, -1.0, 0.0, 1.0])
 tsol = gensol(p0_KRp, (trans_KKBBRp, params_a, fitdat_a_time, u0_a))
-obj_expT(tsol, fitdat_a_time, verbose=true)
+# obj_expT(tsol, fitdat_a_time, verbose=true)
 qplotrf(tsol)
 begin
 modrftplot(tsol)
 plot!(fitdat_a_time)
 end
 
-opt_a = solve(NonlinearLeastSquaresProblem(err_nls_a_time, p0_KRp, (trans_KKBBRp, params_a, fitdat_a_time, u0_a)), LevenbergMarquardt(), show_trace=Val(true))
+opt_a = solve(NonlinearLeastSquaresProblem(err_nls_a_time, p0_KRp, (trans_KKBBRp, params_a, fitdat_a_time, u0_a)), LevenbergMarquardt())
 sol_a = gensol(opt_a.u, (trans_KKBBRp, params_a, fitdat_a_time, u0_a))
 prm_a = sol_a.prob.p
-@info "a fit" transform(trans_KKBBRp, opt_a.u)
-obj_expT(tsol, fitdat_a_time, verbose=true)
-obj_expT(sol_a, fitdat_a_time, verbose=true)
+# @info "a fit" transform(trans_KKBBRp, opt_a.u)
+# obj_expT(tsol, fitdat_a_time, verbose=true)
+# obj_expT(sol_a, fitdat_a_time, verbose=true)
 
 qplotrf(sol_a)
 # ----------
@@ -225,7 +225,7 @@ p0_KRp = vcat(opt_b_rf.u, [0.1, 1.0, 2.0, 2.0])
 opt_b = solve(NonlinearLeastSquaresProblem(err_nls_b_time, p0_KRp, (trans_KKBBRp, params_b, fitdat_b_time, u0_b)), LevenbergMarquardt())
 sol_b = gensol(opt_b.u, (trans_KKBBRp, params_b, fitdat_b_time, u0_b))
 prm_b = sol_b.prob.p
-@info "b fit" transform(trans_KKBBRp, opt_b.u)
+# @info "b fit" transform(trans_KKBBRp, opt_b.u)
 
 qplotrf(sol_b)
 
@@ -272,7 +272,7 @@ p0_KRp = vcat(opt_c_rf.u, [0.1, 1.0, 2.0, 2.0])
 opt_c = solve(NonlinearLeastSquaresProblem(err_nls_c_time, p0_KRp, (trans_KKBBRp, params_c, fitdat_c_time, u0_c)), LevenbergMarquardt())
 sol_c = gensol(opt_c.u, (trans_KKBBRp, params_c, fitdat_c_time, u0_c))
 prm_c = sol_c.prob.p
-@info "c fit" transform(trans_KKBBRp, opt_c.u)
+# @info "c fit" transform(trans_KKBBRp, opt_c.u)
 
 qplotrf(sol_c)
 
@@ -283,31 +283,8 @@ modrftplot!(sol_c, sampmarks=false)
 end
 
 # ----------------- Figure 1c, Braatz group comparison
-
-# const AM = MicrowaveLyoModeling.AnalyticalModel
-# # They assume a sublimation temperature of 256.15K
-# # This is equivalent to chamber pressure of 1300 μbar, since they do no mass transfer resistance
-# # I will instead use measured pressures to get temperature
-# Tm1 = find_zero( T->LyoPronto.calc_psub(T*u"K")-5u"μbar", 250)*u"K" # Lower bound on pch
-# Tm2 = find_zero( T->LyoPronto.calc_psub(T*u"K")-20u"μbar", 250)*u"K" # Upper bound on pch
-# Tm3 = 256.15u"K" # Their assumed value
-# Kv = 65u"W/m^2/K"  # from paper
-# Qppp_f = 242_345u"W/m^3"  # from paper
-# kf = 2.30u"W/m/K"
-# Tb0 = 236.85u"K" # initial T from Gitter 2019 temperatures
-# Tbf = Tm3 # from Park 2021
-# # Tb0 = 213.15u"K" # Gitter 2019 shelf temperatures
-# # Tbf = 248.15u"K" # Gitter 2019 shelf temperatures for lyo
-# r = 0.2u"K/minute"
-
-# pp1 = AM.Params(Kv, Qppp_f, kf, 0.042u"m", r, Tb0, Tbf, Tm1)
-# pp2 = AM.Params(Kv, Qppp_f, kf, 0.042u"m", r, Tb0, Tbf, Tm2)
-# t1, s, T1 = AM.calc_tsT(pp1);
-# t2, s, T2 = AM.calc_tsT(pp2);
-
 t3 = [0, 1, 3.9]u"hr" # Manually set to match figure
 T3 = [236.85, 256.15, 256.15]u"K" # Manually set to match figure
-
 
 begin
 pl_T = blankplot_hrC(xwiden=false)
@@ -400,24 +377,24 @@ end)
 # This \tabular gets copied and pasted into the .tex manuscript
 # but inside the table with caption, \sisetup, etc.
 # Also, replace {rllll} with {rSSSS} for siunitx formatting
-begin
-tab_transpose = hcat(collect.(fit_table)...)
-column_labels = LatexCell.(vcat(["\\makecell{Bhambhani 2021\\\\ Fig. 5b}"], ["\\makecell{Gitter 2019\\\\ Fig. 1"*i*"}" for i in "abc"]))
-row_labels = ["\$$(string(key)[1])\\s{$(string(key)[2:end])}\$, "*latexify(unit(val), fmt=SiunitxNumberFormatter()) for (key, val) in pairs(fit_table[1])]
-# table_formatter = (x,i,j)->latexify(ustrip(x), fmt=SiunitxNumberFormatter(format_options="round-mode=figures, round-precision=3, exponent-mode=threshold, exponent-thresholds=-2:3"))
-table_formatter = (x,i,j)->latexify(ustrip(x), fmt=SiunitxNumberFormatter())
-table_highlighter = LatexHighlighter((x,i,j)->(i∈5:7 && j==1), (x,i,j,s)->s*"{\\footnotemark[1]}") # Footnote on Rp parameters
-pretty_table(tab_transpose; row_labels, header=column_labels, 
-    backend=Val(:latex), 
-    alignment=:l,
-    formatters=table_formatter,
-    highlighters=table_highlighter,
-    )
-end
+# begin
+# tab_transpose = hcat(collect.(fit_table)...)
+# column_labels = LatexCell.(vcat(["\\makecell{Bhambhani 2021\\\\ Fig. 5b}"], ["\\makecell{Gitter 2019\\\\ Fig. 1"*i*"}" for i in "abc"]))
+# row_labels = ["\$$(string(key)[1])\\s{$(string(key)[2:end])}\$, "*latexify(unit(val), fmt=SiunitxNumberFormatter()) for (key, val) in pairs(fit_table[1])]
+# # table_formatter = (x,i,j)->latexify(ustrip(x), fmt=SiunitxNumberFormatter(format_options="round-mode=figures, round-precision=3, exponent-mode=threshold, exponent-thresholds=-2:3"))
+# table_formatter = (x,i,j)->latexify(ustrip(x), fmt=SiunitxNumberFormatter())
+# # table_highlighter = LatexHighlighter((x,i,j)->(i∈5:7 && j==1), (s,x,i,j)->s*"{\\footnotemark[1]}") # Footnote on Rp parameters
+# pretty_table(tab_transpose; row_labels, column_labels, 
+#     backend=:latex, 
+#     alignment=:l,
+#     formatters=[table_formatter],
+#     # highlighters=[table_highlighter],
+#     )
+# end
 
 # Same info, somewhat better LaTeX tabular output
 # This gets put straight on the clipboard
-# and pasted into the .tex manuscript
+# so you can paste it into the .tex manuscript
 begin
 column_labels = LaTeXString.(vcat(["{\\makecell{Bhambhani 2021\\\\ Fig. 5b}}"], ["{\\makecell{Gitter 2019\\\\ Fig. 1"*i*"}}" for i in "abc"]))
 row_labels = LaTeXString.(["\$$(string(key)[1])\\s{$(string(key)[2:end])}\$, "*latexify(unit(val), fmt=SiunitxNumberFormatter()) for (key, val) in pairs(fit_table[1])])
@@ -430,22 +407,44 @@ clipboard(latextabular(ustrip.(tab_transpose),
     booktabs=true))
 end
 
-# -----------------
-# Braatz group analytical model
-begin
-pl_all = blankplot_hrC()
-@df Tdat_b exptfplot!(:t, :T, nmarks=40)
-# @df thm_pd exptvwplot!(:t, :T3, nmarks=40)
-modrftplot!(sol_b, labsuffix=", LC-DIF",)
-plot!(t1, T1, c=:green, label=L"$T_{f}$, TLM with $T_{sub}$ from $p_{ch}$")
-plot!(t2, T2, c=:green, label="")
-plot!(t3, T3, c=:purple, label=L"$T_{f}$, TLM as originally shown")
-plot!(legend=:topleft)
-# plot!([1, 2.7], [-37, -27], arrow=:arrow, c=:gray, linewidth=2, label="")
-# pl_brtz = plot!(pl_all, u"hr", u"°C"; inset=bbox(0.38, 0.65, 0.3, 0.15), subplot=2)
-# pl_brtz = pl_all[2]
-# plot!(pl_brtz, t, T ,label="",  markersize=7, c=:green)
-# plot!(pl_brtz; ylim=(-40.1, -39.4), xlabel="", ylabel="", )
-end
-savefig(plotsdir("gitter2019_compT.svg"))
-savefig(plotsdir("gitter2019_compT.pdf"))
+# # -----------------
+# # Braatz group analytical model
+
+# const AM = MicrowaveLyoModeling.AnalyticalModel
+# # They assume a sublimation temperature of 256.15K
+# # This is equivalent to chamber pressure of 1300 μbar, since they do no mass transfer resistance
+# # I will instead use measured pressures to get temperature
+# Tm1 = find_zero( T->LyoPronto.calc_psub(T*u"K")-5u"μbar", 250)*u"K" # Lower bound on pch
+# Tm2 = find_zero( T->LyoPronto.calc_psub(T*u"K")-20u"μbar", 250)*u"K" # Upper bound on pch
+# Tm3 = 256.15u"K" # Their assumed value
+# Kv = 65u"W/m^2/K"  # from paper
+# Qppp_f = 242_345u"W/m^3"  # from paper
+# kf = 2.30u"W/m/K"
+# Tb0 = 236.85u"K" # initial T from Gitter 2019 temperatures
+# Tbf = Tm3 # from Park 2021
+# # Tb0 = 213.15u"K" # Gitter 2019 shelf temperatures
+# # Tbf = 248.15u"K" # Gitter 2019 shelf temperatures for lyo
+# r = 0.2u"K/minute"
+
+# pp1 = AM.Params(Kv, Qppp_f, kf, 0.042u"m", r, Tb0, Tbf, Tm1)
+# pp2 = AM.Params(Kv, Qppp_f, kf, 0.042u"m", r, Tb0, Tbf, Tm2)
+# t1, s, T1 = AM.calc_tsT(pp1);
+# t2, s, T2 = AM.calc_tsT(pp2);
+
+# begin
+# pl_all = blankplot_hrC()
+# @df Tdat_b exptfplot!(:t, :T, nmarks=40)
+# # @df thm_pd exptvwplot!(:t, :T3, nmarks=40)
+# modrftplot!(sol_b, labsuffix=", LC-DIF",)
+# plot!(t1, T1, c=:green, label=L"$T_{f}$, TLM with $T_{sub}$ from $p_{ch}$")
+# plot!(t2, T2, c=:green, label="")
+# plot!(t3, T3, c=:purple, label=L"$T_{f}$, TLM as originally shown")
+# plot!(legend=:topleft)
+# # plot!([1, 2.7], [-37, -27], arrow=:arrow, c=:gray, linewidth=2, label="")
+# # pl_brtz = plot!(pl_all, u"hr", u"°C"; inset=bbox(0.38, 0.65, 0.3, 0.15), subplot=2)
+# # pl_brtz = pl_all[2]
+# # plot!(pl_brtz, t, T ,label="",  markersize=7, c=:green)
+# # plot!(pl_brtz; ylim=(-40.1, -39.4), xlabel="", ylabel="", )
+# end
+# savefig(plotsdir("gitter2019_compT.svg"))
+# savefig(plotsdir("gitter2019_compT.pdf"))
