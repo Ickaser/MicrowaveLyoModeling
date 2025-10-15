@@ -121,7 +121,7 @@ end
 # Microwave fitting
 
 @reset po_mw.Rp = conv_prof.prob.p.Rp # Use Rp from conv. drying
-trans_KBB = KBB_transform_basic(Kvwf, Bf, Bvw)
+trans_KBB = KBB_transform_bounded(Kvwf, Bf, Bvw)
 trans_K = K_transform_basic(K_shf_mw(0))
 trans_Rp = Rp_transform_basic(R0, A1, A2)
 trans_KKBB = as(merge(trans_K.transformations, trans_KBB.transformations))

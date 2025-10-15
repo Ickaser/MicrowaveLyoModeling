@@ -43,7 +43,7 @@ end
 allfits = Table(map(colrename, caseparams))
 
 
-allqs = Table(map(x->(QRFf=x["QRFf"], Qvwf=x["Qvwf"], Qshf=x["Qshf"]), caseqs))
+allqs = Table(map(x->(QRFf=abs(x["QRFf"]), Qvwf=abs(x["Qvwf"]), Qshf=abs(x["Qshf"])), caseqs))
 cases_res = Table(cases, allfits, allqs)
 @show cases_res.Bi
 

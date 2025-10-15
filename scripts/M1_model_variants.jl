@@ -68,7 +68,7 @@ prob = ODEProblem(params_base)
 # sol3, prm3 = gensol3(Optim.minimizer(opt3));
 
 
-trans_KBB = KBB_transform_basic(Kvwf, Bf, Bvw)
+trans_KBB = KBB_transform_bounded(Kvwf, Bf, Bvw)
 err_nls = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
 p0 = [2.0, 3.8, 0.1]
 tsol = gen_sol_pd(p0, trans_KBB, params_base)

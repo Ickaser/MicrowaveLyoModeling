@@ -51,7 +51,7 @@ end
 
 # -----------------
 
-trans_KBB = KBB_transform_basic(100u"W/m^2/K", Bf, Bvw)
+trans_KBB = KBB_transform_bounded(100u"W/m^2/K", Bf, Bvw)
 u0 = ustrip.([u"g", u"K", u"K"], [m_f0, fitdat.Tfs[1][1], fitdat.Tfs[1][1]])
 gensol = (x,tpf)->gen_sol_pd(x, tpf...; u0=u0)
 p0 = [0.5, -2.3, -0.5]

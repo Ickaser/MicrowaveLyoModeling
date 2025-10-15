@@ -136,7 +136,7 @@ po_rf = ParamObjRF((
 @df lyo_rf_pd plot(:t, :Tsh_i)
 plot!(Tsh, xlim=(0,2))
 
-trans_KBB = KBB_transform_basic(K_vwf, B_f, B_vw)
+trans_KBB = KBB_transform_bounded(K_vwf, B_f, B_vw)
 
 # gensolrf_SM = (x,tpf)->gen_sol_pd(x, tpf...; u0=u0_rf)
 # obj_SM(x,p) = obj_expT(gensolrf_SM(x, p), p[end], tweight=1)
