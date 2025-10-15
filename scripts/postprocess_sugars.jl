@@ -128,8 +128,8 @@ iend_T1 = searchsortedfirst(thm_pd.t, 3u"hr")
 iend_T34 = searchsortedfirst(thm_pd.t, 5u"hr")
 
 # Condense down into the part that will be fit
-fitdat = @df thm_pd PrimaryDryFit(:t, (thm_pd.T4[begin:iend_T34], 
-    thm_pd.T1[begin:iend_T1]), maximum(:T4), t_end);
+fitdat = @df thm_pd PrimaryDryFit(:t, (:T4[begin:iend_T34], 
+    :T1[begin:iend_T1]), maximum(:T4), t_end);
 
 # Save data in its postprocessed form, to avoid repeating the above
 safesave(datadir("exp_pro", "M2_processed.jld2"), @strdict lyo_pd thm_pd thm_full lyo_full t_end fitdat)
@@ -256,9 +256,8 @@ t_end = lyo_conv_pd.t[argmax(pch_pir_d2[500:end])+499] - lyo_conv_pd.t[1] +0.0u"
 # Identify temperature series for fitting
 # @df thm_conv_pd exptfplot(:t, :T1, :T2, :T3, :T4)
 
-fitdat_center = PrimaryDryFit(thm_conv_pd.t, (thm_conv_pd.T2[thm_conv_pd.t .< 25u"hr"],
-    thm_conv_pd.T2[thm_conv_pd.t .< 29u"hr"]), t_end)
-fitdat_edge = PrimaryDryFit(thm_conv_pd.t, thm_conv_pd.T4[thm_conv_pd.t .< 20u"hr"])
+fitdat_center = @df thm_conv_pd PrimaryDryFit(:t, (:T2[:t .< 25u"hr"], :T2[:t .< 29u"hr"]); t_end)
+fitdat_edge = @df thm_conv_pd PrimaryDryFit(:t, :T4[:t .< 20u"hr"])
 
 safesave(datadir("exp_pro", "BSA_conv_processed.jld2"), @strdict lyo_conv_pd lyo_conv_full thm_conv_pd thm_conv_full t_end fitdat_center fitdat_edge)
 end
@@ -456,7 +455,7 @@ iend_T4 = findlast(thm_conv_pd.t .< 7u"hr")
 
 # Condense down into the part that will be fit
 fitdat_conv = @df thm_conv_pd PrimaryDryFit(:t, (:T2[begin:iend_T2], 
-    :T4[begin:iend_T4]), t_end);
+    :T4[begin:iend_T4]); t_end);
 
 # Save data in its postprocessed form, to avoid repeating the above
 safesave(datadir("exp_pro", "SM1_processed.jld2"), @strdict lyo_conv_pd thm_conv_pd thm_conv_full lyo_conv_full t_end fitdat_conv)

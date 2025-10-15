@@ -10,7 +10,7 @@ function plot_defaults_lprf()
 end
 
 export qplotrf
-function qplotrf(sol; tot_lab="Total", kw...)
+function qplotrf(sol; tot_lab="Total", ordering=1:3, kw...)
     RF_params = sol.prob.p
     Qcontrib = map(sol.t) do ti
         LyoPronto.lumped_cap_rf!(fill(0.0, 3), sol(ti), RF_params, ti, Val(true))
@@ -22,11 +22,13 @@ function qplotrf(sol; tot_lab="Total", kw...)
     QRFf = Qcontrib[4,:]
     QRFvw = Qcontrib[5,:]
     # names = ["sub", "sh-f", "vw-f", "RF-f", "RF-vw", "sh-vw"]
-    names = ["RF-f", "vw-f", "sh-f"]
+    modes = [QRFf, Qvwf, Qshf][ordering]
+    names = ["RF-f", "vw-f", "sh-f"][ordering]
     labs = ["\$Q_\\textrm{$nm}\$" for nm in names]
-    pl = plot(u"hr", u"W", xlabel="Time", ylabel="Heating", unitformat=:square; kw...)
-    areastackplot!(sol.t, QRFf, Qvwf, Qshf, labels=permutedims(labs), fillalpha=0.6)
+    pl = plot(u"hr", u"W", xlabel="Time", ylabel="Heating", unitformat=:square; )
+    fillcolor = permutedims([:yellow, :orange, :red][ordering])
     plot!(sol.t, Qshf.+Qvwf.+QRFf, c=:black, label=tot_lab)
+    areastackplot!(sol.t, modes...; labels=permutedims(labs), fillalpha=0.6, fillcolor, kw...)
     plot!(xlabel="Time", ylabel="Heating")
     return pl
 end

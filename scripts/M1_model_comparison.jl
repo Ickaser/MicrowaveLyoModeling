@@ -1,6 +1,6 @@
 using Roots
 const LP = LyoPronto
-using Latexify, UnitfulLatexify
+using Latexify
 using NonlinearSolve
 
 plot_defaults_lprf()
@@ -272,16 +272,17 @@ table.alpha[4:4] .= 0.0u"cm^1.5"
 
 formatter = (label, unit)-> label *"\n\n"* latexify(unit)
 markers = [:circle, :square, :dtriangle, :utriangle]
+set_default(labelformat=:square)
 begin
 resetfontsizes()
-fitsattr = (label="", unitformat=latexsquareunitlabel, ylabel=" ", left_margin=20Plots.px, widen=1.2, grid=:y, xticks=:none, markersize=5)
+fitsattr = (label="", unitformat=latexify, ylabel=" ", left_margin=20Plots.px, widen=1.2, grid=:y, xticks=:none, markersize=5)
 pl1 = @df table scatter(:Kvwf .|> u"W/m^2/K",   title=L"K_\mathrm{vw-f}"; fitsattr...)
 pl2 = @df table scatter(:Bf,  title=L"B_\mathrm{f}"; yscale=:log10, ylim=(4e6, 2e9), fitsattr...)
-hline!([2e9], c=:gray, ls=:dash, label="")
+hline!([1.5e7], c=:gray, ls=:dash, label="")
 # pl2 = @df table scatter(:Bf,  ylabel=L"B_\text{f}"; yticks=8e8:2e8:1.4e9, fitsattr...)
 # pl3 = @df table scatter(:Bvw, title=L"B_\mathrm{vw}"; yscale=:log10, ylim=(4e6, 2e7), fitsattr...)
 pl3 = @df table scatter(:Bvw, title=L"B_\mathrm{vw}"; yticks=[1e7, 1e8, 1e9], ylim=(4e6,2e9), yscale=:log10, fitsattr...)
-hline!([1e9], c=:gray, ls=:dash, label="")
+hline!([1.2e7], c=:gray, ls=:dash, label="")
 plot!(yticks=([1e7, 1e8, 1e9],[]),ylabel="", left_margin=-20Plots.px)
 pl4 = @df table scatter(:alpha, c=[1, 1, 1, :black],  title=L"\alpha",  widen=1.2; fitsattr...)
 # pl5 = @df table scatter(:a1, c=[:black, 1, :black, :black], ylabel=L"a_1", widen=1.2; fitsattr...)
@@ -317,7 +318,7 @@ savefig(plotsdir("M1_allLC_params.pdf"))
 # -----------------
 # Braatz group analytical model
 
-const AM = MicrowaveLyoModeling.AnalyticalModel
+const AM = LyoProntoNIIMBLRF.AnalyticalModel
 
 Tm = find_zero( T->LyoPronto.calc_psub(T*u"K")-pch(0), 250)*u"K"
 Kv = K_shf_f(pch(0))

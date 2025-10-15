@@ -1,5 +1,5 @@
 using DrWatson
-@quickactivate :MicrowaveLyoModeling
+@quickactivate :LyoProntoNIIMBLRF
 # --------------- Set some plot defaults
 
 plot_defaults_lprf()
@@ -11,6 +11,7 @@ reloaded_SM1 = load(datadir("exp_pro", "SM1_processed.jld2"))
 
 # ------ Model implementation ---------------------------------
 
+begin
 # Vial geometry
 # rad = 1.0u"cm"
 vialsize = "6R"
@@ -57,7 +58,7 @@ po_conv = ParamObjPikal((
     (Kshf, Av, Ap),
     (pch, Tsh)
 ))
-porf_conv = ParamObjRF((
+polc_conv = ParamObjRF((
     (Rpg, hf0, c_solid, ρ_solution),
     (Kshf, Av, Ap),
     (pch, Tsh, RampedVariable(0u"W")), # dummy RF power
@@ -65,25 +66,35 @@ porf_conv = ParamObjRF((
     (f_RF, ConstPhysProp(0.0), 0), # dummy frequency
     (12.0u"W/K/m^2", 1e6u"Ω/m^2", 1e6u"Ω/m^2") # dummy RF params
 ))
+end
 
 # -------------------
 
 trans_Rp = Rp_transform_basic(R0, A1, A2)
-p0_Rp = [0.0, 0.0, 0.0]
 u0 = ustrip.([u"g", u"K", u"K"], [m_f0, fitdat_conv.Tfs[1][1], fitdat_conv.Tfs[1][1]])
 gensol = (x,tpf)->gen_sol_pd(x, tpf...; u0=u0)
 
-tsol = gensol(p0_Rp, (trans_Rp, porf_conv))
-modconvtplot(tsol)
-plot!(fitdat_conv)
+p0_Rp = [1.1, 0.1, 0.1]
+tsol1 = gensol(p0_Rp, (trans_Rp, polc_conv))
+tsol2 = gen_sol_pd(p0_Rp, trans_Rp, po_conv)
+begin
+modconvtplot(tsol1, label="LC")
+modconvtplot!(tsol2, label="Pikal", c=:green)
+plot!(fitdat_conv, nmarks=10)
+end
 
 # opt_KRp = solve(OptimizationProblem(objf_KRp, p0_KRp, (po_conv, fitdat_conv)), optalg)
 # conv_prof = gen_sol_KRp(opt_KRp.u, po_conv)
 
-nls_SM1 = NonlinearFunction{true}((du, x,tpf)->LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3]), resid_prototype=zeros(num_errs(fitdat_conv)))
-opt_Rp = solve(NonlinearLeastSquaresProblem(nls_SM1, p0_Rp, (trans_Rp, porf_conv, fitdat_conv)), LevenbergMarquardt())
+nls_SM1 = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_conv)))
+opt_Rp = solve(NonlinearLeastSquaresProblem(nls_SM1, p0_Rp, (trans_Rp, po_conv, fitdat_conv)), LevenbergMarquardt(), reltol=1e-8)
+nls_SM1_lc = NonlinearFunction{true}((du, x,tpf)->LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3]), resid_prototype=zeros(num_errs(fitdat_conv)))
+opt_Rp_lc = solve(NonlinearLeastSquaresProblem(nls_SM1_lc, p0_Rp, (trans_Rp, polc_conv, fitdat_conv)), LevenbergMarquardt())
 # @time opt_Rp = solve(OptimizationProblem(objf_Rp, p0_Rp, (trans_Rp, porf_conv, fitdat_conv)), optalg)
-conv_prof = gensol(opt_Rp.u, (trans_Rp, porf_conv))
+# @show RpFormFit(transform(trans_Rp, opt_Rp.u).Rp...)
+# @show RpFormFit(transform(trans_Rp, opt_Rp_lc.u).Rp...)
+conv_prof_lc = gensol(opt_Rp_lc.u, (trans_Rp, polc_conv))
+conv_prof = gen_sol_pd(opt_Rp.u, trans_Rp, po_conv)
 
 begin
 conv_labels = [L"T_{f1}"*", edge";;
@@ -94,8 +105,9 @@ blankplot_hrC()
 @df thm_conv_pd exptfplot!(:t, :T4, :T1, :T2, linealpha=0.9, labels=conv_labels)
 # plot!(fitdat_conv)
 modconvtplot!(conv_prof)
+modconvtplot!(conv_prof_lc, c=:green, label="LC")
 plot!(Tsh, tmax=15u"hr", label=L"T_{sh}", c=:black)
-plot!(xlim=(0, 12), ylim=(-35, 12), legend=:topright)
+plot!(xlim=(0, 14), ylim=(-35, 12), legend=:topright)
 tendplot!(fitdat_conv.t_end)
 end
 
@@ -148,7 +160,7 @@ begin
 convplot = blankplot_hrC()
 @df thm_conv_pd exptfplot!(:t, :T4, :T2, :T1, nmarks=40, sampmarks=true, linealpha=0.2)
 
-modrftplot!(conv_prof, )
+modrftplot!(conv_prof_lc, )
 # plot!(edge_prof.t.*u"hr", edge_prof.(edge_prof.t, idxs=2).*u"K", label=L"T_{f}"*", model edge", c=6)
 plot!(Tsh, label=L"T_\mathrm{sh}", c=:black)
 plot!(xlim=(0, 12), ylim=(-35, 60), legend=:topleft)
@@ -186,8 +198,8 @@ end
 # savefig(plotsdir("SM1-2_compT.pdf"))
 
 begin
-plq = qplotrf(prof_RF)
-plot!(size=(400,300), widen=false)
+plq = qplotrf(prof_RF, ordering=[3,2,1])
+plot!(size=(400,300), ylim=(0, 0.4), widen=false)
 end
 # savefig(plotsdir("SM2_energy_budget.svg"))
 # savefig(plotsdir("SM2_energy_budget.pdf"))
@@ -196,7 +208,7 @@ begin
 plot!(convplot, left_margin=30*Plots.px,)
 plot!(rfplot, ylabel=nothing, )
 plot!(plq, left_margin=30Plots.px)
-plot(convplot, rfplot, plq, title = ["CONV" "RF" "RF"], layout=@layout([a b c{0.25w}]),
+plot(convplot, rfplot, plq, title = ["SM1 (conv.)" "SM2 (RF-assisted)" "SM2"], layout=@layout([a b c{0.25w}]),
      size=(1100, 400), top_margin = 20Plots.px, bottom_margin=30Plots.px)
 end
 savefig(plotsdir("SM1-2_combine_T_q.svg"))

@@ -53,14 +53,14 @@ tendplot!(fitdat.t_end, ls=:dash, label="")
 #     vspan!([ti, to], lw=0, c=:red, alpha=0.4, label="")
 # end
 plot!(tt, pp, fillrange=0, lw=0, c=:red, label="")
-plot!(; yticks=[0.0, 0.7], widen=false, ylabel="RF Power\n[W/vial]", yunit=nothing, top_margin=-30Plots.px)
+plot!(; yticks=[0.0, 0.7], widen=false, ylabel="RF Power\n[W/vial]", yunitformat=(l,u)->l, top_margin=-30Plots.px)
 # plot!(yticks=[], ylabel="RF", size=(600, 100), xtickdir=:out, widen=false)
 plot!(plT, xlabel="", xwiden=false, legend=:bottomright, xformatter=x->"", left_margin=30Plots.px, )
 plTp = plot(plT, plp, link = :x, xlims=(0,8.5), layout=@layout([a; b{0.1h}]), size=(600,400), bottom_margin=20Plots.px)
 # savefig(plotsdir("M4_power.svg"))
 # savefig(plotsdir("M4_power.pdf"))
 
-plq = qplotrf(prof_RF)
+plq = qplotrf(prof_RF, ordering=[3,2,1])
 plot!(widen=false, ylim=(0, 0.6), left_margin=20Plots.px)
 plot(plTp, plq, layout=@layout([a  b{0.35w}]), size=(1000, 400), bottom_margin=20Plots.px)
 end

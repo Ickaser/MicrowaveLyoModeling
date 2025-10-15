@@ -1,5 +1,5 @@
 using DrWatson
-@quickactivate :MicrowaveLyoModeling
+@quickactivate :LyoProntoNIIMBLRF
 
 # pythonplot()
 plot_defaults_lprf()
@@ -60,13 +60,15 @@ nls_M1 = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)
 p0 = [3.0, 3.0, 0.3]
 tsol = gen_sol_pd(p0, trans_KBB, params_base)
 modrftplot(tsol)
-plot!(fitdat)
+plot!(fitdat, nmarks=40)
+
 
 # @time objf_KBB(p0, (trans_KBB, params_base, fitdat))
 # opt1 = solve(OptimizationProblem(objf_KBB, p0, (trans_KBB, params_base, fitdat)), optalg, maxiters=100, show_trace=true)
 
 opt1 = solve(NonlinearLeastSquaresProblem(nls_M1, p0, (trans_KBB, params_base, fitdat)), LevenbergMarquardt())
 prof_RF = gen_sol_pd(opt1.u, trans_KBB, params_base)
+transform(trans_KBB, opt1.u)
 
 # Save fit results to a file
 save_fitresults(opt1, "M1")
@@ -86,18 +88,18 @@ plot!(legend=:topleft, ylim=(-40, 50), xlim=(0,13))
 annotate!(8, -32, Plots.text("end of drying,\nRF off", 12, "Computer Modern"))
 plot!([fitdat.t_end-1.5u"hr", fitdat.t_end-0.2u"hr"], [-30, -30], arrow=:arrow, c=:black, linewidth=1, label="")
 plot!(size=(480,400), left_margin=20Plots.px)
-end
-# savefig(plotsdir("M1_compT.svg"))
-# savefig(plotsdir("M1_compT.pdf"))
+# end
+# # savefig(plotsdir("M1_compT.svg"))
+# # savefig(plotsdir("M1_compT.pdf"))
 
-begin
-plq = qplotrf(prof_RF)
+# begin
+plq = qplotrf(prof_RF, ordering=3:-1:1)
 plot!(size=(400,300), ylim=(0,0.5), widen=false, left_margin=20Plots.px, bottom_margin=20Plots.px)
-end
 # savefig(plotsdir("M1_energy_budget.svg"))
 # savefig(plotsdir("M1_energy_budget.pdf"))
 
 plot(plT, plq, layout=@layout([a  b{0.4w}]), size=(800,400))
+end
 savefig(plotsdir("M1_T_q_combine.svg"))
 savefig(plotsdir("M1_T_q_combine.pdf"))
 
@@ -121,6 +123,14 @@ end
 
 savefig(plotsdir("M1_T_q_combine_poster.svg"))
 
+begin
+blankplot_hrC(size=(400,300), legend=false)
+plot!(Tsh, c=:gray, tmax=13.9u"hr", label="")
+@df thm_pd exptfplot!(:t, :T4, sampmarks=true, linealpha=0.4, nmarks=30)
+@df thm_pd exptvwplot!(:t, :T3, nmarks=40, sampmarks=true, linealpha=0.4)
+tendplot!(fitdat.t_end, label="", ls=:dash)
+end
+savefig(plotsdir("M1_exp.svg"))
 
 # -------------- 
 # Validate on M2 case
@@ -164,3 +174,23 @@ end
 plot(plT, plq, layout=@layout([a  b{0.4w}]), size=(800,400))
 savefig(plotsdir("M2_T_q_combine.svg"))
 savefig(plotsdir("M2_T_q_combine.pdf"))
+
+begin
+plT = blankplot_hrC(margin_left=200Plots.px)
+# @df thm_pd_M2[1:3000] exptfplot!(:t, :T4, :T1, :T3, nmarks=40, label="exp, f") 
+@df thm_pd_M2[1:3000] exptfplot!(:t, :T4, :T1, :T3, nmarks=40, labels=["exp f" "exp f" "exp f"]) 
+plot!(Tsh, c=:black, label="shelf")
+modrftplot!(sol_M2, trimend=1, linealpha=0.8, lw=4, label=["LC, f"  "LC, vw"])
+tendplot!(t_end_M2, label="", ls=:dash)
+# tendplot!(thm_pd.t[argmax(thm_pd.T4)], ls=:dash, label="RF off")
+plot!(legend=:topleft, ylim=(-40, 60), xlim=(0,8))
+annotate!(4.5, -28, Plots.text("end of drying,\nRF off", 12, "Computer Modern"))
+plot!([t_end_M2-1.5u"hr", t_end_M2-0.2u"hr"], [-30, -30], arrow=:arrow, c=:black, linewidth=1, label="")
+plot!(size=(360,250), left_margin=20Plots.px, legend_columns=2, legend=:topleft, legendfontsize=10)
+plq = qplotrf(sol_M2, tot_lab="")
+plot!(size=(400,300), ylim=(0,0.4), widen=false, left_margin=20Plots.px, bottom_margin=20Plots.px)
+plot!(plq, legendfontsize=11, legend_columns=1, legend=:topright)
+plot(plT, plq, layout=@layout([a  b{0.4w}]), size=(650,250))
+end
+
+savefig(plotsdir("M2_T_q_combine_poster.svg"))

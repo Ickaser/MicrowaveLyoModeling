@@ -2,8 +2,9 @@ using DrWatson
 @quickactivate :MicrowaveLyoModeling
 
 using Latexify
-using UnitfulLatexify
 resetfontsizes()
+
+plot_defaults_lprf()
 
 casenames = ["M1", "M2", "M3", "M4", "SM"]
 casenames_pretty = copy(casenames); casenames_pretty[5] = "SM2"
@@ -72,18 +73,33 @@ ticklabs = (range(1, length(cases)), cases.prettyname)
 # savefig(plotsdir("compare_Rp_params.pdf"))
 
 begin
-rfattr = (xticks=:none, c=[1, :black, 1, 1, 1], markersize=5, label="", yscale=:log10, ywiden=1.2, xwiden=1.2, unitformat=format_1ln)
+rfattr = (xticks=(1:5, []), grid=:y, c=[1, :black, 1, 1, 1], markersize=5, label="", yscale=:log10, ywiden=1.2, xwiden=1.2, unitformat=format_1ln)
 pl1 = @df allfits scatter(:Kvwf, ylabel=L"K_\mathrm{vw-f}",;  rfattr...,c=[1, :black, 1, :black, 1], )
 pl2 = @df allfits scatter(:Bf,   ylabel=L"B_\mathrm{f}"; ylims=(4e6, 2e9), rfattr...)
+hline!([1.5e7], l=:dash, c=:gray, label="")
 pl3 = @df allfits scatter(:Bvw,  ylabel=L"B_\mathrm{vw}"  ; ylims=(4e6,2e9),rfattr...)
+hline!([1.2e7], l=:dash, c=:gray, label="")
 # pl4 = @df allfits scatter(:f,  ylabel=L"B_\text{vw}"  ; rfattr...)
-plot!(grid = :y, xtick_dir =:in, xtickfontrotation=45)
+plot!(xtick_dir =:in, xtickfontrotation=45)
 plot!(xticks=ticklabs)
 plot!(left_margin=20Plots.px)
 pl_RFp = plot(pl1, pl2, pl3, layout=(3,1), link=:x, size=(400,400))
 end
 # savefig(plotsdir("compare_RFparams.svg"))
 # savefig(plotsdir("compare_RFparams.pdf"))
+
+begin
+pl1 = @df allfits bar(sqrt.(:Tferr), xticks=:none, lw=1, label="", ylim=(0, 20.5))
+plot!(ylabel="RMS error,  \n" * L"$T_\mathrm{f} \quad [\mathrm{K}]$")
+pl2 = @df allfits bar(sqrt.(:Tvwerr), xticks=:none, lw=1, label="", c=[1, 2, 1, 1, 1], ylim=(0, 20.5))
+plot!(ylabel="RMS error,  \n" * L"$T_\mathrm{vw} \quad [\mathrm{K}]$")
+pl3 = @df allfits bar(sqrt.(:terr), xticks=ticklabs, lw=1, label="")
+plot!(ylabel="Abs. error,  \n" * L"t_\mathrm{end}\quad [\mathrm{hr}]")
+plot!(ylims=(0, 1.8), xgrid=false, xtick_dir=:none)
+ple = plot(pl1, pl2, pl3, layout=(3,1), size=(400,400), link=:x)
+end
+# savefig(plotsdir("compare_RF_err.svg"))
+# savefig(plotsdir("compare_RF_err.pdf"))
 
 begin
 @df allqs barstackplot(ticklabs[1], :QRFf, :Qvwf, :Qshf, labels=[L"Q_\mathrm{RF-f}" L"Q_\mathrm{vw-f}" L"Q_\mathrm{sh-f}"] )
@@ -99,20 +115,8 @@ end
 # savefig(plotsdir("compare_RFQ.svg"))
 # savefig(plotsdir("compare_RFQ.pdf"))
 
-begin
-pl1 = @df allfits bar(sqrt.(:Tferr), xticks=:none, lw=1, label="")
-plot!(ylabel="RMS error,  \n" * L"$T_\mathrm{f} \quad [\mathrm{K}]$")
-pl2 = @df allfits bar(sqrt.(:Tvwerr), xticks=:none, lw=1, label="", c=[1, 2, 1, 2, 1])
-plot!(ylabel="RMS error,  \n" * L"$T_\mathrm{vw} \quad [\mathrm{K}]$")
-pl3 = @df allfits bar(sqrt.(:terr), xticks=ticklabs, lw=1, label="")
-plot!(ylabel="Abs. error,  \n" * L"t_\mathrm{end}\quad [\mathrm{hr}]")
-plot!(ylims=(0, 1.5), xgrid=false, xtick_dir=:none)
-ple = plot(pl1, pl2, pl3, layout=(3,1), size=(400,400), link=:x)
-end
-# savefig(plotsdir("compare_RF_err.svg"))
-# savefig(plotsdir("compare_RF_err.pdf"))
 
-plot(pl_RFp, ple, pl_Q, layout=(1,3), size=(1000, 400), left_margin=28Plots.px)
+plot(pl_RFp, ple, pl_Q, layout=@layout([a b c{0.4w}]) , size=(900, 400), left_margin=28Plots.px)
 savefig(plotsdir("compare_RFQe.svg"))
 savefig(plotsdir("compare_RFQe.pdf"))
 # blankmmplot() = plot(u"mm", u"mm", ylabel="",xlabel="", showaxis=false, grid=false, aspect_ratio=:equal, yscale=:identity)
