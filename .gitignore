@@ -1,3 +1,9 @@
 
 # Simulation output binary files aren't good for version control
 *.jld2
+# Zipped files not good either
+*.tar
+# Plots
+*.pdf
+*.png
+*.svg
