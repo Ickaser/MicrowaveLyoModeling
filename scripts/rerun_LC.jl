@@ -4,6 +4,8 @@
 # Preprocess experiments to get experimental data to choose usable data
 let; include(scriptsdir("postprocess_sugars.jl")); end
 
+# Compare LC variants
+let; include(scriptsdir("M1_model_variants.jl")) end
 # Fit LC model to experiments
 let; include(scriptsdir("modelcomparison_M1.jl")) end
 let; include(scriptsdir("modelcomparison_M3.jl")) end
