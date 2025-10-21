@@ -1,10 +1,11 @@
-export plot_defaults_lprf
-function plot_defaults_lprf()
+export plot_defaults_mlm
+function plot_defaults_mlm()
     default(:fontfamily, "Computer Modern")
     default(:framestyle, :box)
     default(:lw, 2)
     default(:markersize, 4)
     default(:markerstrokewidth, 0.5)
+    default(:unitformat, :square)
     resetfontsizes()
     scalefontsizes(1.2)
 end

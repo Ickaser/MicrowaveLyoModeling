@@ -2,7 +2,7 @@ using DrWatson
 @quickactivate :MicrowaveLyoModeling
 
 # pythonplot()
-plot_defaults_lprf()
+plot_defaults_mlm()
 
 # ----------------------------------------
 # Load processed data into memory

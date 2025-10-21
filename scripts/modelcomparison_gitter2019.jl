@@ -9,7 +9,7 @@ const LP = LyoPronto
 using Latexify
 using NonlinearSolve
 
-plot_defaults_lprf()
+plot_defaults_mlm()
 set_default(labelformat=:square)
 default(:yunitformat, :square)
 

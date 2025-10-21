@@ -1,10 +1,7 @@
 
-using Roots
-const LP = LyoPronto
 using Latexify
-using NonlinearSolve
 
-plot_defaults_lprf()
+plot_defaults_mlm()
 default(:unitformat, :square)
 
 # ----------------------------------------
@@ -17,7 +14,7 @@ T2mw = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "bh
 T1c = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "bhambhani2021_fig5", "T_b_TC1.csv"), Table))
 T2c = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "bhambhani2021_fig5", "T_b_TC5.csv"), Table))
 
-Tsh = RampedVariable([-50.0, -50, -21]u"°C" .|>u"K", [0.5, 0.5]u"K/minute", [0.5u"hr"] ) # Chamber wall temperature
+Tsh = RampedVariable([-50.0, -50, -21]u"°C" .|>u"K", [0.5, 0.5]u"K/minute", [0.5u"hr"] ) # Conventional lyo temperature
 
 blankplot_hrC()
 plot!(Tsh, tmax=20u"hr", yunit=u"°C")

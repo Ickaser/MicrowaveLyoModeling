@@ -1,4 +1,4 @@
-plot_defaults_lprf()
+plot_defaults_mlm()
 
 M4 = load(datadir("exp_pro", "M4_processed.jld2"))
 @unpack thm_pd, lyo_pd, fitdat, P_per_vial = M4

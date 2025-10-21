@@ -3,7 +3,7 @@ const LP = LyoPronto
 using Latexify
 using NonlinearSolve
 
-plot_defaults_lprf()
+plot_defaults_mlm()
 
 # ----------------------------------------
 # Load processed data into memory
@@ -266,12 +266,12 @@ function row_from_params(prm)
 end
 
 table = Table(map(row_from_params, prms))
-safesave(plotsdir("M1_tuning_tab.html"), pretty_table(HTML, table))
+# safesave(plotsdir("M1_tuning_tab.html"), pretty_table(HTML, table))
 
 table.alpha[4:4] .= 0.0u"cm^1.5"
 
 formatter = (label, unit)-> label *"\n\n"* latexify(unit)
-markers = [:circle, :square, :dtriangle, :utriangle]
+markers = [:circle, :square, :ltriangle, :rtriangle]
 set_default(labelformat=:square)
 begin
 resetfontsizes()

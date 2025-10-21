@@ -2,7 +2,7 @@ using DrWatson
 @quickactivate :MicrowaveLyoModeling
 # --------------- Set some plot defaults
 
-plot_defaults_lprf()
+plot_defaults_mlm()
 
 # --------------- Read data
 # Load processed data into memory

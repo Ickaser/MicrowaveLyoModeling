@@ -4,7 +4,7 @@ using DrWatson
 using Latexify
 resetfontsizes()
 
-plot_defaults_lprf()
+plot_defaults_mlm()
 
 casenames = ["M1", "M2", "M3", "M4", "SM"]
 casenames_pretty = copy(casenames); casenames_pretty[5] = "SM2"

@@ -1,4 +1,4 @@
-plot_defaults_lprf()
+plot_defaults_mlm()
 # ----------------------------
 # Read in data
 
