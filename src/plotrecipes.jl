@@ -8,6 +8,7 @@ function plot_defaults_mlm()
     default(:unitformat, :square)
     resetfontsizes()
     scalefontsizes(1.2)
+    set_default(labelformat=:square) # Latexify, not Plots
 end
 
 export qplotrf

@@ -3,15 +3,9 @@
 # as well as chamber pressure when only Pirani is measured.
 # What it does do is demonstrate that figure 4 from Park et al. 2021 is way off.
 
-using DataInterpolations
-using Roots
-const LP = LyoPronto
-using Latexify
-using NonlinearSolve
+# using Roots # Needed only if you uncomment TLM model
 
 plot_defaults_mlm()
-set_default(labelformat=:square)
-default(:yunitformat, :square)
 
 # ------------------------------------------------
 # Figure 1a from Gitter 2019

@@ -1,8 +1,5 @@
 
-using Latexify
-
 plot_defaults_mlm()
-default(:unitformat, :square)
 
 # ----------------------------------------
 # See section "Specific Surface Area Measurements" for these details

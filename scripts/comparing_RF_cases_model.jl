@@ -1,9 +1,6 @@
 using DrWatson
 @quickactivate :MicrowaveLyoModeling
 
-using Latexify
-resetfontsizes()
-
 plot_defaults_mlm()
 
 casenames = ["M1", "M2", "M3", "M4", "SM"]
@@ -72,19 +69,19 @@ ticklabs = (range(1, length(cases)), cases.prettyname)
 # savefig(plotsdir("compare_Rp_params.svg"))
 # savefig(plotsdir("compare_Rp_params.pdf"))
 
-begin
-rfattr = (xticks=(1:5, []), grid=:y, c=[1, :black, 1, 1, 1], markersize=5, label="", yscale=:log10, ywiden=1.2, xwiden=1.2, unitformat=format_1ln)
-pl1 = @df allfits scatter(:Kvwf, ylabel=L"K_\mathrm{vw-f}",;  rfattr...,c=[1, :black, 1, :black, 1], )
-pl2 = @df allfits scatter(:Bf,   ylabel=L"B_\mathrm{f}"; ylims=(4e6, 2e9), rfattr...)
-hline!([1.5e7], l=:dash, c=:gray, label="")
-pl3 = @df allfits scatter(:Bvw,  ylabel=L"B_\mathrm{vw}"  ; ylims=(4e6,2e9),rfattr...)
-hline!([1.2e7], l=:dash, c=:gray, label="")
-# pl4 = @df allfits scatter(:f,  ylabel=L"B_\text{vw}"  ; rfattr...)
-plot!(xtick_dir =:in, xtickfontrotation=45)
-plot!(xticks=ticklabs)
-plot!(left_margin=20Plots.px)
-pl_RFp = plot(pl1, pl2, pl3, layout=(3,1), link=:x, size=(400,400))
-end
+# begin
+# rfattr = (xticks=(1:5, []), grid=:y, c=[1, :black, 1, 1, 1], markersize=5, label="", yscale=:log10, ywiden=1.2, xwiden=1.2, unitformat=format_1ln)
+# pl1 = @df allfits scatter(:Kvwf, ylabel=L"K_\mathrm{vw-f}",;  rfattr...,c=[1, :black, 1, :black, 1], )
+# pl2 = @df allfits scatter(:Bf,   ylabel=L"B_\mathrm{f}"; ylims=(4e6, 2e9), rfattr...)
+# hline!([1.5e7], l=:dash, c=:gray, label="")
+# pl3 = @df allfits scatter(:Bvw,  ylabel=L"B_\mathrm{vw}"  ; ylims=(4e6,2e9),rfattr...)
+# hline!([1.2e7], l=:dash, c=:gray, label="")
+# # pl4 = @df allfits scatter(:f,  ylabel=L"B_\text{vw}"  ; rfattr...)
+# plot!(xtick_dir =:in, xtickfontrotation=45)
+# plot!(xticks=ticklabs)
+# plot!(left_margin=20Plots.px)
+# pl_RFp = plot(pl1, pl2, pl3, layout=(3,1), link=:x, size=(400,400))
+# end
 # savefig(plotsdir("compare_RFparams.svg"))
 # savefig(plotsdir("compare_RFparams.pdf"))
 
@@ -116,7 +113,8 @@ end
 # savefig(plotsdir("compare_RFQ.pdf"))
 
 
-plot(pl_RFp, ple, pl_Q, layout=@layout([a b c{0.4w}]) , size=(900, 400), left_margin=28Plots.px)
+# plot(pl_RFp, ple, pl_Q, layout=@layout([a b c{0.4w}]) , size=(900, 400), left_margin=28Plots.px)
+plot(ple, pl_Q, layout=@layout([a c{0.6w}]) , size=(600, 400), left_margin=28Plots.px)
 savefig(plotsdir("compare_RFQe.svg"))
 savefig(plotsdir("compare_RFQe.pdf"))
 # blankmmplot() = plot(u"mm", u"mm", ylabel="",xlabel="", showaxis=false, grid=false, aspect_ratio=:equal, yscale=:identity)
@@ -145,3 +143,19 @@ savefig(plotsdir("compare_RFQe.pdf"))
 # end
 # savefig(plotsdir("compare_vialfill.svg"))
 # savefig(plotsdir("compare_vialfill.pdf"))
+
+# Table to be pasted into LaTeX manuscript
+begin
+relevant_params = [:Kvwf, :Bf, :Bvw]
+tab_filtered = hcat([getproperty(allfits, p) for p in relevant_params]...)
+row_labels = LaTeXString.("{".*cases.prettyname .*"}")
+column_labels = LaTeXString.(["{\$$(string(key)[1])\\s{$(string(key)[2:end])}\$, "*latexify(unit(getproperty(allfits[1], key)), fmt=SiunitxNumberFormatter())*"}" for key in relevant_params])
+clipboard(latextabular(ustrip.(tab_filtered),
+    side=row_labels, 
+    adjustment=[Symbol("@{}"), :r, :S, :S, :S, Symbol("@{}")],
+    head=column_labels,
+    fmt=SiunitxNumberFormatter(),
+    latex=false,
+    booktabs=true))
+end
+

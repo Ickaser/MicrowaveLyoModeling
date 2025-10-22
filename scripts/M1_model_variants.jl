@@ -1,7 +1,4 @@
 using Roots
-const LP = LyoPronto
-using Latexify
-using NonlinearSolve
 
 plot_defaults_mlm()
 
@@ -272,7 +269,6 @@ table.alpha[4:4] .= 0.0u"cm^1.5"
 
 formatter = (label, unit)-> label *"\n\n"* latexify(unit)
 markers = [:circle, :square, :ltriangle, :rtriangle]
-set_default(labelformat=:square)
 begin
 resetfontsizes()
 fitsattr = (label="", unitformat=latexify, ylabel=" ", left_margin=20Plots.px, widen=1.2, grid=:y, xticks=:none, markersize=5)
@@ -322,7 +318,7 @@ const AM = MicrowaveLyoModeling.AnalyticalModel
 
 Tm = find_zero( T->LyoPronto.calc_psub(T*u"K")-pch(0), 250)*u"K"
 Kv = K_shf_f(pch(0))
-Qppp_f = uconvert(u"W/m^3", P_per_vial(0)*prm1.Bf*(2π*LyoPronto.e_0)*f_RF*LP.eppf(Tm, f_RF))
+Qppp_f = uconvert(u"W/m^3", P_per_vial(0)*prm1.Bf*(2π*LyoPronto.e_0)*f_RF*LyoPronto.eppf(Tm, f_RF))
 kf = LyoPronto.k_ice
 Tb0 = Tsh.setpts[1]
 Tbf = Tsh.setpts[2]
