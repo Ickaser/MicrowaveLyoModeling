@@ -348,27 +348,29 @@ savefig(plotsdir("gitter2019_1c_slide.pdf"))
 
 # --------------------- All three in one big ugly figure
 
-plot(pl_1a, pl_1b, pl_1c; layout=(1,3), size=(1200,600), left_margin=30Plots.px)
-plot!(bottom_margin=20Plots.px)
+# plot(pl_1a, pl_1b, pl_1c; layout=(1,3), size=(1200,600), left_margin=30Plots.px)
+# plot!(bottom_margin=20Plots.px)
 
-plot(qplotrf(sol_a), qplotrf(sol_b), qplotrf(sol_c), layout=3, legend=(1.7, 0.7))
-savefig(plotsdir("gitter2019_qplots.png"))
+# plot(qplotrf(sol_a), qplotrf(sol_b), qplotrf(sol_c), layout=3, legend=(1.7, 0.7))
+# savefig(plotsdir("gitter2019_qplots.png"))
 # ------------------
 # Make fits into a table
 
 # Get Bhambhani 2021 fit parameters
 fit_bh_load = load(datadir("exp_pro", "bhambhani2021_fit_params.jld2"))
-fit_bh = merge(fit_bh_load["conv"], fit_bh_load["mw"])
+fit_bh_mw = fit_bh_load["mw"]
+fit_bh_conv = merge(fit_bh_load["conv"], (;Kvwf=NaN*u"W/m^2/K", Bf=NaN*u"Ω/m^2", Bvw=NaN*u"Ω/m^2"))
 
 fits_gitter = transform.([trans_KKBBRp], [opt_a.u, opt_b.u, opt_c.u])
-fit_table = Table(map([fit_bh, fits_gitter...]) do row
+fit_table = Table(map([fit_bh_conv, fit_bh_mw, fits_gitter...]) do row
     (   Kshf = row.Kshf.val,
+        a0 = row.Rp.R0,
+        a1 = row.Rp.A1,
+        a2 = row.Rp.A2,
         Kvwf = row.Kvwf,
         Bf = row.Bf,
         Bvw = row.Bvw,
-        a0 = row.Rp.R0,
-        a1 = row.Rp.A1,
-        a2 = row.Rp.A2)
+    )
 end)
 
 
@@ -393,13 +395,15 @@ end)
 
 # Same info, somewhat better LaTeX tabular output
 # This gets put straight on the clipboard
-# so you can paste it into the .tex manuscript
+# so you can paste it into the .tex manuscript then clear out NaNs
 begin
-column_labels = LaTeXString.(vcat(["{\\makecell{Bhambhani 2021\\\\ Fig. 5b}}"], ["{\\makecell{Gitter 2019\\\\ Fig. 1"*i*"}}" for i in "abc"]))
-row_labels = LaTeXString.(["\$$(string(key)[1])\\s{$(string(key)[2:end])}\$, "*latexify(unit(val), fmt=SiunitxNumberFormatter()) for (key, val) in pairs(fit_table[1])])
+tab_transpose = hcat(collect.(fit_table)...)'
+# row_labels = LaTeXString.(vcat(["{\\makecell{Bhambhani 2021\\\\ Fig. 5$i}}" for i in "ba"], ["{\\makecell{Gitter 2019\\\\ Fig. 1"*i*"}}" for i in "abc"]))
+row_labels = LaTeXString.(vcat(["{Bhambhani 2021 Fig. 5$i}" for i in "ba"], ["{Gitter 2019 Fig. 1"*i*"}" for i in "abc"]))
+column_labels = LaTeXString.(["{\\makecell{\$$(string(key)[1])\\s{$(string(key)[2:end])}\$ \\\\"*latexify(unit(val), fmt=SiunitxNumberFormatter())*"}}" for (key, val) in pairs(fit_table[1])])
 clipboard(latextabular(ustrip.(tab_transpose),
     side=row_labels, 
-    adjustment=[Symbol("@{}"), :r, :S, :S, :S, :S, Symbol("@{}")],
+    adjustment=[Symbol("@{}"), :r, :S, :S, :S, :S, :S, :S, :S, Symbol("@{}")],
     head=column_labels,
     fmt=SiunitxNumberFormatter(),
     latex=false,
