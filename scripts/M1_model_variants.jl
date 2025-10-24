@@ -48,7 +48,7 @@ params_base = ParamObjRF((
     (pch, Tsh, P_per_vial),
     (m_f0, LyoPronto.cp_ice, m_v, LyoPronto.cp_gl, A_v),
     (f_RF, LyoPronto.eppf, LyoPronto.epp_gl),
-    (Kvwf, Bf, Bvw, 0.0u"cm^1.5"),
+    (Kvwf, Bf, Bvw, missing),
 ))
 end
 
@@ -56,13 +56,7 @@ prob = ODEProblem(params_base)
 @time tsol = solve(prob, Rosenbrock23())
 
 # -----------------
-# Tune with model version 3, no mass transfer params 
-# p0 = [10, 7e7, 1e7]
-# gensol3 = x->gen_sol_rf_LC3(x, params_base)
-# obj3 = genobj_posprm(gensol3, obj_expT, fitdat)
-# @time obj3(p0)
-# opt3 = optimize(obj3, p0, Optim.Options(g_tol = 1e-3))
-# sol3, prm3 = gensol3(Optim.minimizer(opt3));
+# Tune with model version 3 (DIF), no mass transfer params 
 
 
 trans_KBB = KBB_transform_bounded(Kvwf, Bf, Bvw)
@@ -112,7 +106,7 @@ plot!(fitdat)
 end
 
 ## ------------------
-# Tune with model version 2
+# Tune with model version 2, which is DIC
 
 trans_KBBα = as(merge(trans_KBB.transformations, (;alpha=TVScale(0.001u"cm^(3//2)") ∘ TVExp())))
 # p0_2 = vcat(opt3.u, [0.0])
@@ -265,13 +259,14 @@ end
 table = Table(map(row_from_params, prms))
 # safesave(plotsdir("M1_tuning_tab.html"), pretty_table(HTML, table))
 
-table.alpha[4:4] .= 0.0u"cm^1.5"
+# table.alpha[4:4] .= 0.0u"cm^1.5"
 
 formatter = (label, unit)-> label *"\n\n"* latexify(unit)
-markers = [:circle, :square, :ltriangle, :rtriangle]
+markers = [:circle, :square, :diamond, :hexagon]
+colors = [1, 2, 3, 4]
 begin
 resetfontsizes()
-fitsattr = (label="", unitformat=latexify, ylabel=" ", left_margin=20Plots.px, widen=1.2, grid=:y, xticks=:none, markersize=5)
+fitsattr = (label="", c=colors, markers=markers, unitformat=latexify, ylabel=" ", left_margin=20Plots.px, widen=1.2, grid=:y, xticks=:none, markersize=5)
 pl1 = @df table scatter(:Kvwf .|> u"W/m^2/K",   title=L"K_\mathrm{vw-f}"; fitsattr...)
 pl2 = @df table scatter(:Bf,  title=L"B_\mathrm{f}"; yscale=:log10, ylim=(4e6, 2e9), fitsattr...)
 hline!([1.5e7], c=:gray, ls=:dash, label="")
