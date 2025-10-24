@@ -31,7 +31,6 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [sources]
 LevelSetSublimation = {url = "https://github.com/Ickaser/LevelSetSublimation.jl"}
-LyoPronto = {url = "https://github.com/LyoHUB/LyoPronto.jl"}
 
 [compat]
 DrWatson = "2.12.5"
