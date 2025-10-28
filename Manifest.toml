@@ -1133,8 +1133,8 @@ uuid = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
 version = "1.11.0"
 
 [[deps.LevelSetSublimation]]
-deps = ["ADTypes", "Accessors", "ComponentArrays", "ConcreteStructs", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "PythonPlot", "Reexport", "Roots", "SparseArrays", "Sparspak", "SpecialFunctions", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
-git-tree-sha1 = "b0829f2c67dedeec2ab7f2c1058df1b1affb44e2"
+deps = ["ADTypes", "Accessors", "ComponentArrays", "ConcreteStructs", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "Reexport", "Roots", "SparseArrays", "Sparspak", "SpecialFunctions", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
+git-tree-sha1 = "f623f57442ab7212c3380541174489b35e079a5e"
 repo-rev = "main"
 repo-url = "https://github.com/Ickaser/LevelSetSublimation.jl"
 uuid = "93c9dee1-5b16-4b35-bfc1-a042def24bdf"
@@ -1305,9 +1305,9 @@ version = "1.2.0"
 
 [[deps.LyoPronto]]
 deps = ["ADTypes", "Accessors", "CSV", "ColorTypes", "ConcreteStructs", "ConstructionBase", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "LinearAlgebra", "OrdinaryDiffEqNonlinearSolve", "OrdinaryDiffEqRosenbrock", "PrecompileTools", "RecipesBase", "Reexport", "Roots", "SavitzkyGolay", "SpecialFunctions", "TransformVariables", "Unitful"]
-git-tree-sha1 = "93ac25ec4572df643e14c4dee6d7dc94e978ec26"
+git-tree-sha1 = "fe84bd73d488c6b63c8248d510fbbf77da6e2e0a"
 uuid = "86014da0-a5b3-40a4-ad76-3e66dfc3e269"
-version = "0.3.0"
+version = "0.3.1"
 
 [[deps.MKL_jll]]
 deps = ["Artifacts", "IntelOpenMP_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "oneTBB_jll"]
