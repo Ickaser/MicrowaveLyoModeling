@@ -1,17 +1,11 @@
-@quickactivate :LevelSetSublimation
-const LSS = LevelSetSublimation
-using UnitfulLatexify
 
-# plot defaults
-default(:linewidth, 3)
-default(:markersize, 5)
-default(:fontfamily, "Computer Modern")
+plot_defaults_mlm()
 
 # -----------------------
 
 begin
 simgridsize = (41, 31)
-base_props = LSS.base_props
+base_props = LevelSetSublimation.base_props
 
 # Get some stuff from LyoProntoNIIMBLRF
 lcfitparams = load(datadir("exp_pro", "M1_KvRpRF.jld2"))
@@ -37,7 +31,7 @@ l = fill(l_base, simgridsize)
 # l .*= 2.0 .^range(-1, 1, length=simgridsize[1]) # Big pores at the outer radius
 l .*= range(0.25, 1.5, length=simgridsize[1]) # Big pores at the outer radius
 # Heat transfer
-kd = LSS.k_sucrose * (1-ϵ)
+kd = LyoPronto.k_sucrose * (1-ϵ)
 m_v = LyoPronto.get_vial_mass(vialsize)
 A_v = π*LyoPronto.get_vial_radii(vialsize)[2]^2
 # Microwave
@@ -57,8 +51,7 @@ KD = 0.46u"1/Torr"
 Kshf = RpFormFit(KC, KP, KD)
 tvprops = TimeVaryingProperties(f_RF, P_per_vial, Tsh, pch, Kshf)
 
-# paramsd = LSS.base_props, tcprops, tvprops
-paramsd = LSS.base_props, tcprops, tvprops
+paramsd = base_props, tcprops, tvprops
 
 # ------------
 # Assemble simulation
@@ -70,15 +63,15 @@ config = merge(config, (time_integ=Val(:dae_then_exp),))
 end
 
 # Run simulation
-
-# @time res, fname = produce_or_load(sim_from_dict, config; filename=hash, verbose=true, tag=true, prefix=datadir("sims", "M1"))
 @info "before solve"
 
-@time res = sim_from_dict(config; verbose=true)
+# @time res, fname = produce_or_load(sim_from_dict, config; filename=hash, verbose=true, tag=true, prefix=datadir("sims", "M1_porevar"))
 
-@info "after solve"
+@time res = sim_from_dict(config; verbose=true)
 fname = datadir("sims", "M1_porevar_"*string(hash(config), base=10)*".jld2")
 safesave(fname, res)
+
+@info "after solve"
 
 # fname = datadir("sims", "M1_"*string(hash(config), base=10)*".jld2")
 # res = load(fname)["sim"]
@@ -111,8 +104,8 @@ placethermocouples!(dom, [(0.95, 0.9)], msc=palette(:Oranges_4)[4:4], c=:white, 
 plot!(size=(600, 400), left_margin=-5Plots.px, right_margin=0Plots.px)
 plot!(pl_sum[4], cbar_title="\nTemperature [°C]", right_margin=20Plots.px)
 end
-savefig(plotsdir("porevar_LSS_summVT.svg"))
-savefig(plotsdir("porevar_LSS_summVT.pdf"))
+# savefig(plotsdir("porevar_LSS_summVT.svg"))
+# savefig(plotsdir("porevar_LSS_summVT.pdf"))
 
 # resetfontsizes()
 begin

@@ -1,16 +1,10 @@
-@quickactivate :LevelSetSublimation
-const LSS = LevelSetSublimation
-using UnitfulLatexify
 
-# plot defaults
-default(:linewidth, 3)
-default(:markersize, 5)
-default(:fontfamily, "Computer Modern")
+plot_defaults_mlm()
 
 # -----------------------
 
 begin
-base_props = LSS.base_props
+base_props = LevelSetSublimation.base_props
 
 # Get some stuff from LyoProntoNIIMBLRF
 lcfitparams = load(datadir("exp_pro", "M1_KvRpRF.jld2"))
@@ -33,7 +27,7 @@ A1 = 16u"cm*hr*Torr/g"
 Tguess = 260u"K"
 l = sqrt(u"R"*Tguess/base_props.Mw) / A1
 # Heat transfer
-kd = LSS.k_sucrose * (1-ϵ)
+kd = LyoPronto.k_sucrose * (1-ϵ)
 m_v = LyoPronto.get_vial_mass(vialsize)
 A_v = π*LyoPronto.get_vial_radii(vialsize)[2]^2
 # Microwave
@@ -52,8 +46,7 @@ KD = 0.46u"1/Torr"
 Kshf = RpFormFit(KC, KP, KD)
 tvprops = TimeVaryingProperties(f_RF, P_per_vial, Tsh, pch, Kshf)
 
-# paramsd = LSS.base_props, tcprops, tvprops
-paramsd = LSS.base_props, tcprops, tvprops
+paramsd = base_props, tcprops, tvprops
 
 # ------------
 # Assemble simulation
@@ -76,9 +69,8 @@ end
 fname = datadir("sims", "M1_"*string(hash(config), base=10)*".jld2")
 safesave(fname, res)
 
-# fname = datadir("sims", "M1_"*string(hash(config), base=10)*".jld2")
-fname = datadir("sims", "M1_8944706271621697748.jld2")
-res = load(fname)
+# fname = datadir("sims", "M1_8944706271621697748.jld2")
+# res = load(fname)
 
 sim = res["sim"]
 @unpack dom = sim
@@ -100,40 +92,67 @@ vtmarks = [:diamond, :utriangle, :square, :circle]
 
 resetfontsizes(); scalefontsizes(1.2)
 begin
-pl_sum = summaryT(sim, tstart=0.10, tend=0.80, layout=(1,3))
+pl_sum = summaryT(sim, tstart=0.10, tend=0.80, layout=(3,1))
 placethermocouples!(dom, locs, c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
 placethermocouples!(dom, [(0.95, 0.9)], msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
-plot!(size=(600, 200), left_margin=-5Plots.px, right_margin=0Plots.px)
-plot!(pl_sum[4], cbar_title="\nTemperature [°C]", right_margin=20Plots.px)
+plot!(size=(300, 600), left_margin=-5Plots.px, right_margin=0Plots.px)
+plot!(pl_sum[4], cbar_title="\nTemperature [°C]", left_margin=20Plots.px, right_margin=40Plots.px)
+
 end
 # savefig(plotsdir("M1_LSS_summVT.svg"))
 # savefig(plotsdir("M1_LSS_summVT.pdf"))
 
 # resetfontsizes()
 begin
-labs = vcat([L"$T$, model "*i for i in ["bottom","corner","center"]], L"$T_\mathrm{vw}$, model")
-pl_T = blankplothrC(;xlabel=L"t", )
-plot!(Tsh, c=:black, tmax=t_end, label=L"T_\mathrm{sh}")
-@df thmdat exptfplot!(:t, :T4, :T1, sampmarks=true, linealpha=0.2, nmarks=20)
-@df thmdat exptvwplot!(:t, :T3, nmarks=25, msw=3, )
-vt_plot!(sim, locs; labels=permutedims(labs), markers=permutedims(vtmarks), step=40, samplemarkers=true, linealpha=0.8)
-tendplot!(t_end, label="")
-plot!(legend=:outerright, size=(700, 300), bottom_margin=15Plots.px, left_margin=15Plots.px)
+resetfontsizes(); scalefontsizes(1.5)
+tf = sim.sol.t[end]
+tsums = range(2, 11, length=3)
+pl_sum = summaryT(sim, tstart=first(tsums)*3600/tf, tend=last(tsums)*3600/tf, layout=(3,1))
+for i in 1:3
+    # placethermocouples!(pl_sum[i], dom, locs, c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
+    # placethermocouples!(pl_sum[i], dom, [(0.95, 0.9)], msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
+    plot!(pl_sum[i], LevelSetSublimation.PlaceThermocouples((dom, locs)), c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
+    plot!(pl_sum[i], LevelSetSublimation.PlaceThermocouples((dom, [(0.95, 0.9)])), msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
 end
-# savefig(plotsdir("M1_multiT.svg"))
-# savefig(plotsdir("M1_multiT.pdf"))
-# plot!(pl_sum, margin_right=26Plots.px)
-plot(pl_T, pl_sum, layout=@layout([a{0.6h}; b]), size=(700,500))
+plot!(left_margin=-15Plots.px, right_margin=0Plots.px)
+plot!(pl_sum[4], cbar_title="\nTemperature [°C]", left_margin=20Plots.px, right_margin=40Plots.px)
+labs = vcat(["\$T_\\textrm{f}\$, LS "*i for i in ["bottom","corner","center"]], L"$T_\textrm{vw}$, LS")
+pl_T = blankplothrC(;)
+plot!(Tsh, c=:black, tmax=t_end, label=L"T_\textrm{sh}")
+@df thmdat exptfplot!(:t, :T4, :T1, sampmarks=true, linealpha=0.2, nmarks=15, ms=6)
+@df thmdat exptvwplot!(:t, :T3, nmarks=25, msw=3, ms=6)
+vt_plot!(sim, locs; labels=permutedims(labs), markers=permutedims(vtmarks), step=40, samplemarkers=true, linealpha=0.7, ms=6)
+tendplot!(t_end, label="")
+for t in tsums
+    plot!([t, t], [-30, -42], label="", c=:black, lw=1, arrows=true)
+end
+plot!(ywiden=false)
+plot!(legend=:topleft, bottom_margin=15Plots.px, left_margin=15Plots.px)
+plot(pl_T, pl_sum, layout=@layout([a{0.7w}  b]), size=(800,500))
+end
 savefig(plotsdir("M1_allLSS.svg"))
 savefig(plotsdir("M1_allLSS.pdf"))
 
 begin
+pl_T = blankplothrC(;)
+vt_selec = [1,3]
+# plot!(Tsh, c=:black, tmax=t_end, label=L"T_\textrm{sh}")
+plot!(Tsh, c=:black, tmax=t_end, label="")
+@df thmdat exptfplot!(:t, :T4, sampmarks=true, linealpha=0.2, nmarks=20, ms=6)
+@df thmdat exptvwplot!(:t, :T3, nmarks=25, msw=3, ms=6)
+vt_plot!(sim, locs[vt_selec]; labels=[L"$T_\textrm{f}$, model" L"$T_\textrm{d}$" L"$T_\textrm{vw}$"], markers=permutedims(vtmarks), step=40, samplemarkers=true, linealpha=0.7, ms=6)
+tendplot!(t_end, label="")
+plot!(size=(400, 300), legend_columns=2)
+end
+savefig(plotsdir("M1_LSS_GA.svg"))
+
+begin
 resetfontsizes(); scalefontsizes(1.5)
-pl_sum = summaryT(sim, tstart=0.10, tend=0.80, layout=(1,3))
+pl_sum = summaryT(sim, tstart=0.10, tend=0.80, layout=(3,1))
 placethermocouples!(dom, locs, c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
 placethermocouples!(dom, [(0.95, 0.9)], msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
-plot!(size=(600, 200),  left_margin=-20Plots.px, right_margin=-5Plots.px)
-plot!(pl_sum[4], cbar_title="Temperature [°C]", left_margin=0Plots.px, right_margin=20Plots.px)
+plot!(size=(300, 600), left_margin=-15Plots.px, right_margin=0Plots.px)
+plot!(pl_sum[4], cbar_title="\nTemperature [°C]", left_margin=20Plots.px, right_margin=40Plots.px)
 labs = vcat(["LS "*i for i in ["bottom","corner","center"]], "LS vw")
 pl_T = blankplothrC(;)
 plot!(Tsh, c=:black, tmax=t_end, label="shelf")
@@ -141,8 +160,8 @@ plot!(Tsh, c=:black, tmax=t_end, label="shelf")
 @df thmdat exptvwplot!(:t, :T3, nmarks=25, msw=3, label="exp vw")
 vt_plot!(sim, locs; labels=permutedims(labs), markers=permutedims(vtmarks), step=40, samplemarkers=true, linealpha=0.7)
 tendplot!(t_end, label="")
-plot!(legend=:outerbottomright, size=(700, 300), bottom_margin=15Plots.px, left_margin=15Plots.px)
-plot(pl_T, pl_sum, layout=@layout([a{0.6h}; b]), size=(700,500))
+plot!(legend=:topleft, size=(700, 300), bottom_margin=15Plots.px, left_margin=15Plots.px)
+plot(pl_T, pl_sum, layout=@layout([a{0.6w}  b]), size=(700,500))
 end
 savefig(plotsdir("M1_allLSS_poster.svg"))
 
@@ -164,15 +183,18 @@ t_Rp, hd_eff, Rp_eff, Asub = get_eff_Rp(sim);
 Rp_orig = @. Rp0 + A1*hd_eff
 relerr = (Rp_eff .- Rp_orig)./Rp_orig
 begin
-pl1 = plot(u"cm", u"cm^2*Torr*hr/g", ylabel="R_p", xlabel=nothing, xticks=(0:0.5:1.5, []), unitformat=latexsquareunitlabel)
-plot!(hd_eff, Rp_eff, seriestype=:samplemarkers, marker=:circle, label="LSS with curvature", ylims=(0, 40))
-plot!(hd_eff, Rp_orig, c=:black, label="Original Rp")
-pl2 = plot(u"cm", NoUnits, ylabel="Relative\nDifference", xlabel=LaTeXString("h_d"), unitformat=latexsquareunitlabel)
+pl1 = plot(u"cm", u"cm^2*Torr*hr/g", ylabel="R_p", unitformat=latexify)
+plot!(hd_eff, Rp_eff, seriestype=:samplemarkers, marker=:circle, label="LS, effective \$R_p\$ with curvature", ylims=(0, 40))
+plot!(hd_eff, Rp_orig, c=:black, label="Original \$R_p\$")
+plot!(xlabel=nothing, xticks=(0:0.5:1.5, []), bottom_margin=-10Plots.px)
+pl2 = plot(u"cm", NoUnits, ylabel="Relative\nDiff.", xlabel=LaTeXString("h_d"), unitformat=latexify)
 hline!([0], label="", c=:black, lw=1)
-plot!(hd_eff, relerr; c=1, ylim=(-0.06, 0.06), label="",)
-pl3 = plot(u"cm", u"cm^2", ylabel="A_\\mathrm{sub}", xlabel=LaTeXString("h_d"), unitformat=latexsquareunitlabel)
+plot!(hd_eff, relerr; c=1, ylim=(-0.05, 0.05), yticks=(-0.05:0.05:0.05, ["-5%", "0%", "5%"]), label="",)
+plot!(xticks=(0:0.5:1.5), bottom_margin=5Plots.px)
+pl3 = plot(u"cm", u"cm^2", ylabel="A_\\mathrm{sub}", xlabel=LaTeXString("h_d"), unitformat=latexify)
 plot!(hd_eff, Asub, ylim=(3.1, 3.25), label="")
-plot(pl1, pl2, pl3, layout=@layout([a{0.5h}; b; c]), link=:x, size=(600, 600))
+plot!(xticks=(0:0.5:1.5))
+plot(pl1, pl2, pl3, layout=@layout([a{0.5h}; b{0.2h}; c]), link=:x, xlim=extrema(hd_eff), size=(600, 600))
 end
 savefig(plotsdir("M1_curvatureRp.svg"))
 savefig(plotsdir("M1_curvatureRp.pdf"))
