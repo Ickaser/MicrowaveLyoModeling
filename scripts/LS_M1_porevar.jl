@@ -74,7 +74,7 @@ safesave(fname, res)
 @info "after solve"
 
 # fname = datadir("sims", "M1_"*string(hash(config), base=10)*".jld2")
-# res = load(fname)["sim"]
+# res = load(fname)
 
 sim = res["sim"]
 @unpack dom = sim
@@ -95,33 +95,55 @@ locs = [(0.0, 0.02), (0.6, 0.05)]#, (0.2, 0.5)]
 vtmarks = [:circle, :utriangle, :circle]
 # vtmarks = [:diamond, :utriangle, :square, :circle]
 
-resetfontsizes()
-scalefontsizes(1.2)
+resetfontsizes(); scalefontsizes(1.2)
+# Plot pore size variation
 begin
-pl_sum = summaryT(sim, tstart=0.10, tend=0.9007, layout=(1,3))
-placethermocouples!(dom, locs, c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
-placethermocouples!(dom, [(0.95, 0.9)], msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
-plot!(size=(600, 400), left_margin=-5Plots.px, right_margin=0Plots.px)
-plot!(pl_sum[4], cbar_title="\nTemperature [°C]", right_margin=20Plots.px)
-end
-# savefig(plotsdir("porevar_LSS_summVT.svg"))
-# savefig(plotsdir("porevar_LSS_summVT.pdf"))
+hextend = 1.10
+vextend = 1.05
+walls = Plots.Shape([(-dom.rmax*hextend, dom.zmax+dom.dz*2), 
+            (-dom.rmax*hextend, -(vextend-1)*dom.zmax),
+            ( dom.rmax*hextend, -(vextend-1)*dom.zmax),
+            ( dom.rmax*hextend, dom.zmax+dom.dz*2),
+            ( dom.rmax+dom.dr/2, dom.zmax+dom.dz*2),
+            ( dom.rmax+dom.dr/2, -dom.dz/2),
+            (-dom.rmax-dom.dr/2, -dom.dz/2),
+            (-dom.rmax-dom.dr/2, dom.zmax+dom.dz*2)])
+ll = l .|> u"μm"
+pl_l = plot(aspect_ratio=:equal, showaxis=false, grid=false, widen=false, xlabel="Imposed pore variation")
+heatmap!(dom.rgrid .- dom.rmax, dom.zgrid, ll[end:-1:begin, :]', cmap=:batlow)
+heatmap!(dom.rgrid, dom.zgrid, ll', cmap=:batlow, colorbar_title="Pore size\n")
+plot!(walls, c=:gray, lw=1, label="")
+plot!(bottom_margin=-10Plots.px, right_margin=0Plots.px, left_margin=0Plots.px, top_margin=-10Plots.px)
+# plot!([-dom.rmax, -dom.rmax, dom.rmax, dom.rmax], [dom.zmax, -dom.dz/2, -dom.dz/2, dom.zmax], c=:black, lw=2, label="")
+# end
 
-# resetfontsizes()
-begin
+# begin
+tf = sim.sol.t[end]
+tsums = range(5, 25, length=3)
+pl_sum = summaryT(sim, tstart=first(tsums)*3600/tf, tend=last(tsums)*3600/tf, layout=(3,1))
+for i in 1:3
+    # placethermocouples!(pl_sum[i], dom, locs, c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
+    # placethermocouples!(pl_sum[i], dom, [(0.95, 0.9)], msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
+    plot!(pl_sum[i], LevelSetSublimation.PlaceThermocouples((dom, locs)), c=palette(:Oranges_4)[4:-1:2], markers=vtmarks, label="", markersize=8);
+    plot!(pl_sum[i], LevelSetSublimation.PlaceThermocouples((dom, [(0.95, 0.9)])), msc=palette(:Oranges_4)[4:4], c=:white, markers=[:circle], label="", markersize=8, msw=4);
+end
+plot!(pl_sum[3], cbar_title="\nTemperature [°C]", left_margin=20Plots.px, right_margin=40Plots.px)
 # labs = vcat([L"$T$, model "*i for i in ["bottom","corner","center"]], L"$T_\mathrm{vw}$, model")
 labs = vcat([L"$T$, model "*i for i in ["bottom","offset"]], L"$T_\mathrm{vw}$, model")
 pl_T = blankplothrC( )
-plot!(Tsh, c=:black, tmax=25u"hr", label=L"T_\mathrm{sh}")
+plot!(Tsh, c=:black, tmax=28u"hr", label=L"T_\mathrm{sh}")
 # @df thmdat exptfplot!(:t, :T4, nmarks=20)
 # @df thmdat exptvwplot!(:t, :T3, nmarks=20, msw=3, thickness_scaling=1.0)
 vt_plot!(sim, locs; labels=permutedims(labs), markers=permutedims(vtmarks), step=40, samplemarkers=true, linealpha=0.8)
+for t in tsums
+    plot!([t, t], [-30, -42], label="", c=:black, lw=1, arrows=true)
+end
 # tendplot!(t_end, label="")
-plot!(legend=:outerright, size=(500, 200), bottom_margin=15Plots.px, left_margin=15Plots.px)
+plot!(legend=:top, bottom_margin=15Plots.px, left_margin=15Plots.px)
 # savefig(plotsdir("porevar_multiT.svg"))
 # savefig(plotsdir("porevar_multiT.pdf"))
 # plot!(pl_sum, margin_right=26Plots.px)
-plot(pl_T, pl_sum, layout=@layout([a{0.6h}; b]), size=(600,400))
+plot(pl_T, pl_l, pl_sum, layout=@layout([[a; b{0.3h}] c]), size=(700,500))
 end
 savefig(plotsdir("porevar_allLSS.svg"))
 savefig(plotsdir("porevar_allLSS.pdf"))
@@ -148,17 +170,18 @@ t_Rp, hd_eff, Rp_eff, Asub = get_eff_Rp(sim);
 Rp_orig = @. Rp0 + A1*hd_eff
 relerr = (Rp_eff .- Rp_orig)./Rp_orig
 begin
-pl1 = plot(u"cm", u"cm^2*Torr*hr/g", ylabel="R_p", unitformat=latexsquareunitlabel)
+pl1 = plot(u"cm", u"cm^2*Torr*hr/g", ylabel="R_p", unitformat=latexify)
+plot!(hd_eff, Rp_eff, seriestype=:samplemarkers, marker=:circle, label=L"LS, effective $R_p$ with $l(r,z)$", ylims=(0, 40))
+plot!(hd_eff, Rp_orig, c=:black, label=L"Original $R_p$")
 plot!(xlabel=nothing, xticks=(0:0.5:1.5, []), bottom_margin=-20Plots.px)
-plot!(hd_eff, Rp_eff, seriestype=:samplemarkers, marker=:circle, label=L"LS with $l(r,z)$", ylims=(0, 40))
-plot!(hd_eff, Rp_orig, c=:black, label="Baseline value")
-pl2 = plot(u"cm", NoUnits, ylabel="Relative\nDifference", xlabel=LaTeXString("h_d"), unitformat=latexsquareunitlabel)
+pl2 = plot(u"cm", NoUnits, ylabel="Relative\nDiff.", xlabel=LaTeXString("h_d"), unitformat=latexify)
 hline!([0], label="", c=:black, lw=1)
-plot!(xlabel=nothing, xticks=(0:0.5:1.5, []), bottom_margin=-20Plots.px)
+plot!(xticks=(0:0.5:1.5, []), bottom_margin=5Plots.px)
 plot!(hd_eff, relerr; c=1, ylim=(-0.18, 0.10), label="",)
-pl3 = plot(u"cm", u"cm^2", ylabel="A_\\mathrm{sub}", xlabel=LaTeXString("h_d"), unitformat=latexsquareunitlabel)
+pl3 = plot(u"cm", u"cm^2", ylabel="A_\\mathrm{sub}", xlabel=LaTeXString("h_d"), unitformat=latexify)
 plot!(hd_eff, Asub, ylim=(3.1, 3.35), label="")
-plot(pl1, pl2, pl3, layout=@layout([a{0.5h}; b; c]), link=:x, size=(600, 600))
+plot!(xticks=(0:0.5:1.5, []))
+plot(pl1, pl2, pl3, layout=@layout([a{0.5h}; b{0.2h}; c]), link=:x, xlim=extrema(hd_eff), size=(600, 600))
 end
 savefig(plotsdir("porevar_curvatureRp.svg"))
 savefig(plotsdir("porevar_curvatureRp.pdf"))
