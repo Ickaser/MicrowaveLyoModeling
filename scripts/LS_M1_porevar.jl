@@ -191,15 +191,14 @@ savefig(plotsdir("porevar_curvatureRp.pdf"))
 A_p, A_v = π.* get_vial_radii("6R").^2
 c_solid = 0.05u"g/mL"
 ρ_solution = 1.0u"g/mL"
-LCparams = [
+LCparams = ParamObjRF((
     (RpFormFit(Rp0, A1, 0u"1/cm"), fillvol/A_p, c_solid, ρ_solution),
     (Kshf, A_v, A_p),
     (pch, Tsh, P_per_vial),
     (fillvol*ρ_solution, base_props.Cpf, m_v, base_props.cp_vw),
     (f_RF(0), base_props.εppf, base_props.εpp_vw),
     (Kvwf, Bf, Bvw)
-]
-LCParams = ParamObjRF(LCparams)
+))
 
 lcprob = ODEProblem(LCParams)
 lclyo = solve(lcprob, Rodas3())
