@@ -7,3 +7,6 @@
 *.pdf
 *.png
 *.svg
+*.mp4
+# Slides
+*.pptx
