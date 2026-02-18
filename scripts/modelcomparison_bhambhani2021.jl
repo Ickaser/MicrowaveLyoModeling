@@ -118,8 +118,8 @@ end
 trans_KBB = KBB_transform_bounded(Kvwf, Bf, Bvw)
 trans_K = K_transform_basic(K_shf_mw(0))
 trans_Rp = Rp_transform_basic(R0, A1, A2)
-trans_KKBB = as(merge(trans_K.transformations, trans_KBB.transformations))
-trans_KKBBRp = as(merge(trans_KKBB.transformations, trans_Rp.transformations))
+trans_KKBB = merge(trans_K, trans_KBB)
+trans_KKBBRp = merge(trans_KKBB, trans_Rp)
 nls_mw = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_mw)))
 p0_mw = [2.0, 1.0, -5.1, -1.5] # obj_expT 220.8
 p0_mw = [-1.0, 0.0, -1.1, -2.0] # eventually: obj_expT 141

@@ -111,7 +111,7 @@ trans_KBB = as((Kvwf=TVScale(Kvwf) ∘ TVExp(),
                 Bvw = TVScale(Bvw) ∘ TVExp(),))
 trans_Rp = Rp_transform_basic(R0, A1, A2)
 trans_Kshf = ConstWrapTV() ∘ TVScale(10.0u"W/m^2/K") ∘ TVShift(0.001) ∘ TVLogistic()
-trans_KKBBRp = as(merge(trans_KBB.transformations, (;Kshf=trans_Kshf), trans_Rp.transformations))
+trans_KKBBRp = merge(trans_KBB, as((;Kshf=trans_Kshf)), trans_Rp)
 
 gensol = (x,tpfu)->gen_sol_pd(x, tpfu[1:3]...; u0=tpfu[4])
 

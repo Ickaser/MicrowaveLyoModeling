@@ -88,7 +88,7 @@ end
 # Tune with same model, but also fitting  a1-a2
 
 aa_trans = as((;Rp=as((R0=Constant(Rp.R0), A1=TVScale(Rp.A1) ∘ TVExp(), A2=TVScale(0.01u"cm^-1") ∘ TVExp()))))
-trans_KBBaa = as(merge(trans_KBB.transformations, aa_trans.transformations))
+trans_KBBaa = merge(trans_KBB, aa_trans)
 
 p0_3b = vcat(opt3.u, [0.0, -1.0])
 # ub3b = [10.0, 7.0, 7.0, 3.0, 3.0]
@@ -108,7 +108,7 @@ end
 ## ------------------
 # Tune with model version 2, which is DIC
 
-trans_KBBα = as(merge(trans_KBB.transformations, (;alpha=TVScale(0.001u"cm^(3//2)") ∘ TVExp())))
+trans_KBBα = merge(trans_KBB, as((;alpha=TVScale(0.001u"cm^(3//2)") ∘ TVExp())))
 # p0_2 = vcat(opt3.u, [0.0])
 p0_2 = [3.0, 3.0, -1, -1]
 # ub2 = [10.0, 7.0, 7.0, 3.0]
@@ -236,6 +236,7 @@ plot!(pl_lc1, left_margin=-10Plots.px, ylabel="", yticks=(-40:20:40, ""))
 plot!(pl_lc2, left_margin=-10Plots.px, )
 plot!(pl_lc3, left_margin=-10Plots.px, ylabel="", yticks=(-40:20:40, ""))
 pl_err = bar(errs, xticks=ticklabs, label="", lw=1, title="RMS Error", yguide=L"$\sqrt{L(\vec{\theta})}$  $[\mathrm{K}]$", left_margin=20Plots.px, ylims=(0,11))
+bar!(pl_err, [5], [9.465], xticks=(1:5, vcat(modelnames, ["LS"])))
 plot!(pl_err, left_margin=10Plots.px)
 pl_labs = deepcopy(pl_sr)
 plot!(pl_labs, ylim=(-1,0), xlim=(-1,0), frame=:none, legend=(0, 0.5), ylabel=nothing, xlabel=nothing, title="", legendfontsize=12)
