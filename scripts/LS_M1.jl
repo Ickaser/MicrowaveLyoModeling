@@ -69,7 +69,7 @@ end
 fname = datadir("sims", "M1_"*string(hash(config), base=10)*".jld2")
 safesave(fname, res)
 
-# fname = datadir("sims", "M1_8944706271621697748.jld2")
+# fname = datadir("sims", "M1_15787520252283967571.jld2")
 # res = load(fname)
 
 sim = res["sim"]
@@ -77,7 +77,8 @@ sim = res["sim"]
 
 # --------------
 
-# Plot things of interest
+# Check error against experiment
+@show obj_expT(sim, expdat["fitdat"]; tweight=1e-2)
 
 # ---------------------------
 # Plots
@@ -182,6 +183,10 @@ end
 # --------- Compute effective Rp
 
 t_Rp, hd_eff, Rp_eff, Asub = get_eff_Rp(sim);
+# Compare to LC-IC Asub, for manual and least squares fit
+A_p = π*LyoPronto.get_vial_radii(vialsize)[1]^2
+Asub_ICm = (0.08u"cm^1.5") * sqrt.(hd_eff) .+ A_p
+Asub_DIF = (0u"cm^1.5") * sqrt.(hd_eff) .+ A_p
 Rp_orig = @. Rp0 + A1*hd_eff
 relerr = (Rp_eff .- Rp_orig)./Rp_orig
 begin
@@ -194,12 +199,18 @@ hline!([0], label="", c=:black, lw=1)
 plot!(hd_eff, relerr; c=1, ylim=(-0.05, 0.05), yticks=(-0.05:0.05:0.05, ["-5%", "0%", "5%"]), label="",)
 plot!(xticks=(0:0.5:1.5), bottom_margin=5Plots.px)
 pl3 = plot(u"cm", u"cm^2", ylabel="A_\\mathrm{sub}", xlabel=LaTeXString("h_d"), unitformat=latexify)
-plot!(hd_eff, Asub, ylim=(3.1, 3.25), label="")
+plot!(hd_eff, Asub, ylim=(3.1, 3.25), label="LS")
+plot!(hd_eff, Asub_ICm, ylim=(3.1, 3.25), label="LC-ICm")
+plot!(hd_eff, Asub_DIF, ylim=(3.1, 3.25), label="LC-IC")
+plot!(legend=:none)
+annotate!(pl3, 1.5, 3.13, text("LC-DIF", 12,"Computer Modern"))
+annotate!(pl3, 1.5, 3.18, text("LS",    12,"Computer Modern"))
+annotate!(pl3, 1.0, 3.20, text("LC-IC-m",12,"Computer Modern"))
 plot!(xticks=(0:0.5:1.5))
 plot(pl1, pl2, pl3, layout=@layout([a{0.5h}; b{0.2h}; c]), link=:x, xlim=extrema(hd_eff), size=(600, 600))
 end
-savefig(plotsdir("M1_curvatureRp.svg"))
-savefig(plotsdir("M1_curvatureRp.pdf"))
+savefig(plotsdir("M1_curvatureRp_models.svg"))
+savefig(plotsdir("M1_curvatureRp_models.pdf"))
 
 # -------- LCLyo model
 
@@ -215,14 +226,14 @@ LCparams = ParamObjRF((
     (Kvwf, Bf, Bvw)
 ))
 
-lcprob = ODEProblem(LCParams)
+lcprob = ODEProblem(LCparams)
 lclyo = solve(lcprob, Rodas3())
 
 begin
 blankplothrC()
-@df thmdat exptfplot!(:t, :T1, :T4, marker=:circle, )
-@df thmdat exptvwplot!(:t, :T3, marker=:square, )
-modrftplot!(lclyo, labels=permutedims([i*", LC" for i in ["\$T_f\$", "\$T_{vw}\$"]]))
+@df thmdat exptfplot!(:t, :T1, :T4, marker=:circle, nmarks=30)
+@df thmdat exptvwplot!(:t, :T3, marker=:square, nmarks=30)
+modrftplot!(lclyo, trimend=1, labels=permutedims([i*", LC" for i in ["\$T_\\mathrm{f}\$", "\$T_\\mathrm{vw}\$"]]))
 plot!(size=(400, 200), legend=:outerright)
 end
 # savefig(plotsdir("M1_lc_small.svg"))
@@ -230,11 +241,13 @@ end
 
 begin
 pl_comp = blankplothrC()
-@df thmdat exptfplot!(:t, :T1, :T4, marker=:circle, )
-@df thmdat exptvwplot!(:t, :T3, marker=:square, )
-vt_plot!(sim, locs; labels=permutedims(labs), markers=permutedims(vtmarks), step=40)
-modrftplot!(lclyo, c=:green, linealpha=0.5, labels=permutedims([i*", LC" for i in ["\$T_f\$", "\$T_{vw}\$"]]))
+@df thmdat exptfplot!(:t, :T1, :T4, marker=:circle, nmarks=30, ma=0.5,)
+@df thmdat exptvwplot!(:t, :T3, marker=:square, nmarks=30)
+vt_plot!(sim, locs; labels=permutedims(labs), markers=permutedims(vtmarks), step=40, nmarks=30)
+modrftplot!(lclyo, c=:green, linealpha=0.8, lw=3, trimend=1, labels=permutedims([i*", LC" for i in ["\$T_\\mathrm{f}\$", "\$T_\\mathrm{vw}\$"]]))
 tendplot!(t_end)
 plot!(legend=:outerright, size=(600, 200), bottom_margin=15Plots.px, left_margin=15Plots.px)
 plot(pl_comp, pl_vtloc, layout=@layout([a{0.8w} b]), size=(800,300))
 end
+
+@show obj_expT(sim, expdat["fitdat"]; tweight=1e-2)

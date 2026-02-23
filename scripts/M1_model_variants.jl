@@ -101,8 +101,8 @@ prm3b = sol3b.prob.p
 
 begin
 blankplot_hrC()
-modrftplot!(sol3b)
 plot!(fitdat)
+modrftplot!(sol3b)
 end
 
 ## ------------------
@@ -124,8 +124,8 @@ prm2 = sol2.prob.p
 
 begin
 blankplot_hrC(ylim=(-40, 60))
-modrftplot!(sol2, trimend=1)
 plot!(fitdat)
+modrftplot!(sol2, trimend=1)
 end
 # savefig(plotsdir("M1_LC2.svg"))
 
@@ -150,8 +150,8 @@ prm1 = sol1.prob.p
 
 begin
 blankplot_hrC()
-modrftplot!(sol1, trimend=1)
 plot!(fitdat)
+modrftplot!(sol1, trimend=1)
 end
 
 #---------------------
@@ -225,7 +225,7 @@ pl_sr, pl_lc1, pl_lc2, pl_lc3 = map(sols, modelnames) do sol, modname
     plot!(fitdat_less,nmarks=20, labsuffix=", experiment")
     modrftplot!(sol, trimend=1, sampmarks=false)
     tendplot!(fitdat.t_end, ls=:dash, label="")
-    plot!(title=modname, legend=:none, )
+    plot!(title="LC-"*modname, legend=:none, )
 end
 # plot(pl_lc1, pl_lc1b, pl_lc2, pl_lc3, layout=(2,2)) 
 annotate!(pl_sr, 7, -30, Plots.text("end of drying", 10, "Computer Modern"))
@@ -236,7 +236,7 @@ plot!(pl_lc1, left_margin=-10Plots.px, ylabel="", yticks=(-40:20:40, ""))
 plot!(pl_lc2, left_margin=-10Plots.px, )
 plot!(pl_lc3, left_margin=-10Plots.px, ylabel="", yticks=(-40:20:40, ""))
 pl_err = bar(errs, xticks=ticklabs, label="", lw=1, title="RMS Error", yguide=L"$\sqrt{L(\vec{\theta})}$  $[\mathrm{K}]$", left_margin=20Plots.px, ylims=(0,11))
-bar!(pl_err, [5], [9.465], xticks=(1:5, vcat(modelnames, ["LS"])))
+bar!(pl_err, [5], [9.465]; label="", lw=1, c=:blue, xticks=(1:5, vcat(modelnames, ["LS"])))
 plot!(pl_err, left_margin=10Plots.px)
 pl_labs = deepcopy(pl_sr)
 plot!(pl_labs, ylim=(-1,0), xlim=(-1,0), frame=:none, legend=(0, 0.5), ylabel=nothing, xlabel=nothing, title="", legendfontsize=12)
@@ -244,7 +244,7 @@ plot(pl_sr, pl_lc1, pl_labs, pl_lc2, pl_lc3, pl_err, bottom_margin=20Plots.px, l
 end
 # savefig(plotsdir("M1_allLC_sep.svg"))
 # savefig(plotsdir("M1_allLC_sep.pdf"))
-savefig(plotsdir("M1_allLC_sep_v3.svg"))
+savefig(plotsdir("M1_allLC_sep_v4.svg"))
 
 # opts = [opt1, opt1b, opt2, opt3]
 # prms = [prm1, prm1b, prm2, prm3]
