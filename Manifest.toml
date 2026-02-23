@@ -1113,7 +1113,7 @@ uuid = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
 version = "1.11.0"
 
 [[deps.LevelSetSublimation]]
-deps = ["ADTypes", "Accessors", "ComponentArrays", "ConcreteStructs", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "Reexport", "Roots", "SparseArrays", "Sparspak", "SpecialFunctions", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
+deps = ["ADTypes", "Accessors", "ComponentArrays", "ConcreteStructs", "Contour", "DataFrames", "DataInterpolations", "DiffEqCallbacks", "DocStringExtensions", "DrWatson", "FastGaussQuadrature", "LaTeXStrings", "Latexify", "LinearAlgebra", "LinearSolve", "LyoPronto", "NaNMath", "NonlinearSolve", "OrdinaryDiffEqBDF", "OrdinaryDiffEqSSPRK", "Parameters", "Plots", "PrecompileTools", "Reexport", "Roots", "SparseArrays", "Sparspak", "SpecialFunctions", "StaticArrays", "StatsPlots", "SteadyStateDiffEq", "TypedTables", "UnicodePlots", "Unitful"]
 path = "../LevelSetSublimation"
 uuid = "93c9dee1-5b16-4b35-bfc1-a042def24bdf"
 version = "0.1.0"

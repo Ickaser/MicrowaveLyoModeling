@@ -2,9 +2,7 @@ using DrWatson
 @quickactivate :MicrowaveLyoModeling
 
 # plot defaults
-default(:linewidth, 3)
-default(:markersize, 5)
-default(:fontfamily, "Computer Modern")
+plot_defaults_mlm()
 
 # -----------------------
 # Set up physical parameters
@@ -112,6 +110,21 @@ end
 #   645.7112252
 #  1407.6015413
 #  2713.8488763
+
+# After 2026-02-19 optimizations to LSS
+#   133.4769921
+#   145.4063249
+#   266.8795277
+#   649.6020912
+#  1430.6010879
+#  3716.8375353
+# a second time
+#    21.6823559
+#    84.6647716
+#   240.86768
+#   604.8917237
+#  1338.3625458
+#  3496.8941232
 
 using DataFrames
 allsims = collect_results(datadir("sims"), rinclude=[r"err"])
