@@ -20,10 +20,13 @@ fnames_q = [datadir("exp_pro", nm*"_Q.jld2") for nm in cases.name]
 caseparams = map(load, fnames_param)
 caseqs = map(load, fnames_q)
 
-function colrename(res)
-    rad = get_vial_radii.(cases.vialsize[1])[1]
-    Bi = res["Kvwf"]*rad/LyoPronto.k_ice |> NoUnits
-    nt = (Kvwf = res["Kvwf"] |> u"W/m^2/K", 
+function colrename(res, case)
+    rad = get_vial_radii(case.vialsize)[1]
+    Ap = π*rad^2
+    hf0 = case.fillvol / Ap
+    Bi_z = res["Kshf"]*hf0/LyoPronto.k_ice |> NoUnits
+    Bi_r = res["Kvwf"]*rad/LyoPronto.k_ice |> NoUnits
+    nt = (;Kvwf = res["Kvwf"] |> u"W/m^2/K", 
           Bf = res["Bf"], 
           Bvw = res["Bvw"], 
           fBf = res["Bf"]*res["po"].f_RF,
@@ -35,14 +38,14 @@ function colrename(res)
           Tferr = res["Tferr"],
           Tvwerr = res["Tvwerr"],
           terr = res["terr"],
-          Bi)
+          Bi_z, Bi_r)
 end
-allfits = Table(map(colrename, caseparams))
+allfits = Table(map(colrename, caseparams, cases))
 
 
 allqs = Table(map(x->(QRFf=abs(x["QRFf"]), Qvwf=abs(x["Qvwf"]), Qshf=abs(x["Qshf"])), caseqs))
 cases_res = Table(cases, allfits, allqs)
-@show cases_res.Bi
+@show cases_res.Bi_r cases_res.Bi_z
 
 format_2ln = (label, unit)-> label *"\n\n"* latexify(unit)
 format_1ln = (label, unit)-> label *"\n["* latexify(unit) * "]"

@@ -15,7 +15,7 @@ using Reexport
 @reexport using TransformVariables
 @reexport using LaTeXStrings
 @reexport using Latexify
-@reexport using DataInterpolations: LinearInterpolation, ExtrapolationType, ConstantInterpolation
+@reexport using DataInterpolations: LinearInterpolation, ExtrapolationType, ConstantInterpolation, integral
 @reexport using Accessors
 @reexport using PrettyTables
 using PrecompileTools

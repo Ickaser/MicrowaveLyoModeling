@@ -111,6 +111,9 @@ plot!(calc_hRp_T(po_conv, fitdat_c; i=2)..., label="TC6")
 l = range(0u"cm", stop=h_f0, length=100)
 plot!(l, conv_prof.prob.p.Rp.(l), label="fit to T")
 end
+
+Bi_z_conv = conv_prof.prob.p.Kshf.val * h_f0 / LyoPronto.k_ice |> NoUnits
+
 # -----------------
 # Microwave fitting
 
@@ -146,6 +149,10 @@ end
 qplotrf(sol_mw)
 
 transform(trans_KKBBRp, opt_mw.u)
+
+Bi_z_rf = sol_mw.prob.p.Kshf.val * h_f0 / LyoPronto.k_ice |> NoUnits
+Bi_r_rf = sol_mw.prob.p.Kvwf * 7.5u"mm" / LyoPronto.k_ice |> NoUnits
+@show Bi_z_conv Bi_z_rf Bi_r_rf
 
 save(datadir("exp_pro", "bhambhani2021_fit_params.jld2"), 
     Dict("conv"=>transform(trans_KRp, opt_c.u),

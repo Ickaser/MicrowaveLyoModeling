@@ -14,7 +14,7 @@ Tdat_a = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "
 pdat_a = map(row->(t=row.t*u"hr", pch=row.pch*u"μbar"|>u"mTorr"), CSV.read(datadir("exp_raw", "gitter2019_fig1a", "gitter2019_pch.csv"), Table))
 
 P_a = LinearInterpolation(MWdat_a.P, MWdat_a.t, extrapolation_right=ExtrapolationType.Constant)
-DataInterpolations.integral(P_a, P_a.t[end])/P_a.t[end] # Average power: 39W
+integral(P_a, P_a.t[end])/P_a.t[end] # Average power: 39W
 pch_a = LinearInterpolation(pdat_a.pch, pdat_a.t, extrapolation_right=ExtrapolationType.Constant)
 # plot(P_a, ylim=(0, 120))
 # plot(pch_a)
@@ -39,7 +39,7 @@ pch_b = LinearInterpolation(pdat_b.pch, pdat_b.t, extrapolation_right=Extrapolat
 plot(pch_b)
 # @df pdat plot!(:t, :pch, ylim=(0, NaN))
 P_b = LinearInterpolation(MWdat_b.P , MWdat_b.t; extrapolation_right=ExtrapolationType.Constant) # Unknown number of vials
-DataInterpolations.integral(P_b, P_b.t[end])/P_b.t[end] # Average power: 58W
+integral(P_b, P_b.t[end])/P_b.t[end] # Average power: 58W
 
 # -----------------------------------
 # Figure 1c from Gitter 2019
@@ -50,7 +50,7 @@ T2dat_c = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", 
 pdat_c = map(row->(t=row.t*u"hr", pch=row.pch*u"μbar"|>u"mTorr"), CSV.read(datadir("exp_raw", "gitter2019_fig1c", "pch.csv"), Table))
 
 P_c = LinearInterpolation(MWdat_c.P, MWdat_c.t, extrapolation_right=ExtrapolationType.Constant)
-DataInterpolations.integral(P_c, P_c.t[end])/P_c.t[end] # Average power: 83W
+integral(P_c, P_c.t[end])/P_c.t[end] # Average power: 83W
 pch_c = LinearInterpolation(pdat_c.pch, pdat_c.t, extrapolation_right=ExtrapolationType.Constant)
 # plot(P_c, ylim=(0, 120))
 # plot(pch_c)
@@ -361,7 +361,7 @@ fit_bh_load = load(datadir("exp_pro", "bhambhani2021_fit_params.jld2"))
 fit_bh_mw = fit_bh_load["mw"]
 fit_bh_conv = merge(fit_bh_load["conv"], (;Kvwf=NaN*u"W/m^2/K", Bf=NaN*u"Ω/m^2", Bvw=NaN*u"Ω/m^2"))
 
-fits_gitter = transform.([trans_KKBBRp], [opt_a.u, opt_b.u, opt_c.u])
+fits_gitter = Table(transform.([trans_KKBBRp], [opt_a.u, opt_b.u, opt_c.u]))
 fit_table = Table(map([fit_bh_conv, fit_bh_mw, fits_gitter...]) do row
     (   Kshf = row.Kshf.val,
         a0 = row.Rp.R0,
@@ -372,7 +372,6 @@ fit_table = Table(map([fit_bh_conv, fit_bh_mw, fits_gitter...]) do row
         Bvw = row.Bvw,
     )
 end)
-
 
 # For LaTeX output
 # This \tabular gets copied and pasted into the .tex manuscript
@@ -409,6 +408,10 @@ clipboard(latextabular(ustrip.(tab_transpose),
     latex=false,
     booktabs=true))
 end
+
+Bi_r = fits_gitter.Kvwf * rad_i / LyoPronto.k_ice .|> NoUnits
+Bi_z = [v.val for v in fits_gitter.Kshf] * h_f0 / LyoPronto.k_ice .|> NoUnits
+@show Bi_r Bi_z
 
 # # -----------------
 # # Braatz group analytical model
