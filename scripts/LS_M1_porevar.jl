@@ -73,7 +73,7 @@ safesave(fname, res)
 
 @info "after solve"
 
-# fname = datadir("sims", "M1_"*string(hash(config), base=10)*".jld2")
+# fname = datadir("sims", "M1_porevar_8923977880535565111.jld2")
 # res = load(fname)
 
 sim = res["sim"]
@@ -151,6 +151,10 @@ savefig(plotsdir("porevar_allLSS.pdf"))
 # savefig(plotsdir("M1_multiT_small.svg"))
 # savefig(plotsdir("M1_multiT_small.pdf"))
 
+# -------- Animate the temperature over time
+
+animateT(sim; fname="porevar_LSS.mp4")
+
 
 begin
 pl_vtloc, T = plotframe(10*60*60, sim)
@@ -200,7 +204,7 @@ LCparams = ParamObjRF((
     (Kvwf, Bf, Bvw)
 ))
 
-lcprob = ODEProblem(LCParams)
+lcprob = ODEProblem(LCparams)
 lclyo = solve(lcprob, Rodas3())
 
 begin
