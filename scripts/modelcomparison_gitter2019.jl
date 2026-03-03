@@ -191,7 +191,7 @@ pl_q = qplotrf(sol_a, ordering=[1,2,3])
 plot!(ylabel="Vial\nHeating\n", ylims=(0, 0.31), xlim=(0, NaN), legend=(0.9, 1))
 plot!(xlabel="", xticks=(0:2:10, []), bottom_margin=-10Plots.px)
 pl_mw = plot(xunit=u"hr", xwiden=false, ylabel="MW\nPower\n")
-plot!(MWdat_a.t, MWdat_a.P, c=:red, label="")
+plot!(MWdat_a.t, MWdat_a.P, fillrange=[0], c=:red, label="")
 plot!(ylim=(0, 55), yticks=0:15:60)
 plot!(xlabel="", xticks=(0:2:10, []), bottom_margin=-10Plots.px)
 pl_p = plot(xlabel="Time", xunit=u"hr", xwiden=false, ylabel=L"$p_{ch}$"*"\n")
@@ -201,7 +201,8 @@ plot!(ylims=(0, 22), unitformat=:square)
 pl_1a = plot(pl_T, pl_q, pl_mw, pl_p; size=(900,400), layout=@layout([a [b; c; d]]), link=:x, left_margin=20Plots.px)
 end
 savefig(plotsdir("gitter2019_1a.svg"))
-savefig(plotsdir("gitter2019_1a.pdf"))
+# savefig(plotsdir("gitter2019_1a.pdf")) #Use Inkscape to convert to PDF,
+# because default saving doesn't preserve dotted line in legend
 
 
 # ------------ Fit to figure 1b
