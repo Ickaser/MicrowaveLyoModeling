@@ -10,7 +10,7 @@ which is the underlying analysis code for a manuscript currently in preparation.
 
 This project is structured as follows:
 - The lumped capacitance model is implemented in [LyoPronto.jl](https://lyohub.github.io/LyoPronto.jl/dev/).
-- The level set model is implemented in [LevelSetSublimation.jl](https://github.com/Ickaser/LevelSetSublimation.jl), which has LyoPronto.jl as a dependency.
+- The level set model is implemented in [LevelSetSublimation.jl](https://github.com/Ickaser/LevelSetSublimation.jl), which depends on LyoPronto.jl.
 - This "package", in the `src` folder, implements some historical versions of the lumped capacitance model and the model presented in [Srisuma et al., 2023](https://doi.org/10.1016/j.compchemeng.2023.108318).
 - This package reexports the following Julia libraries (among others), which are liberally used in the analysis scripts:
   - LyoPronto
@@ -48,3 +48,7 @@ This will produce all the graphs in the `plots` folder, as well as putting fit o
 
 To walk through a particular case, I recommend using [VSCode with the Julia extension](https://code.visualstudio.com/docs/languages/julia) to interactively run a script in order. This will generate some intermediate plots that I do not save for publication, but that are useful for closer inspection.
 
+
+## License
+
+The code here, in the folders `src` and `scripts`, is licensed under the MIT license. Data analyzed for this manuscript are provided in `data`, and are licensed under a CC-BY-4.0 license.
