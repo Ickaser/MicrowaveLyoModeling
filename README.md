@@ -39,12 +39,13 @@ using DrWatson
 ```
 which auto-activate the project and enable local path handling from DrWatson.
 
-If you want to simply rerun all the code, `scripts/rerun_all.jl` will rerun all the figure-generating and analysis scripts.
-It runs each other script, in order, in its own `let` block (so that each executes in its own local scope). 
+If you want to simply rerun all the code, `scripts/rerun_LC.jl` will rerun all the figure-generating and analysis scripts using the lumped capacitance model.
+It runs other scripts, in order, in its own `let` block (so that each executes in its own local scope). 
 This will produce all the graphs in the `plots` folder, as well as putting fit output in `data/exp_pro` and some level set simulations in `data/sims`.
 
 To walk through a particular case, first run `scripts/postprocess_sugars.jl`, which preps all experimental data for analysis, then run the script of interest. I recommend using [VSCode with the Julia extension](https://code.visualstudio.com/docs/languages/julia) to interactively run a script in order. This will generate some intermediate plots that I do not save for publication, but that are useful for closer inspection.
 
+The level set simulations take longer to run, so they are left separate. They are included in `scripts/LS_M1.jl`, `scripts/LS_M1_porevar.jl`, and `scripts/LS_error_order.jl`.
 
 ## License
 
