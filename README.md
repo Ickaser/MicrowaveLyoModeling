@@ -53,6 +53,8 @@ The level set simulations take longer to run, so they are left separate. They ar
 ## Data
 The experimental data analyzed here is described in more detail in the full journal article (providing formulations and experimental apparatus, etc.). Within the folder `data/exp_raw`, subfolders by experimental case contain an individual README noting which data files provide which data and show the figures from the article which report that data.
 
+The script `scripts/postprocess_sugars.jl` does postprocessing of experimental data for all cases for which raw data were available (i.e., M1, M2, M3, M4, SM1, SM2).
+
 ## License
 
 The code here, in the folders `src` and `scripts`, is licensed under the MIT license. Data analyzed for this manuscript are provided in `data`, and are licensed under a CC-BY-4.0 license.
