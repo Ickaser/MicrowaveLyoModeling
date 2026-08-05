@@ -93,7 +93,6 @@ p0_c = [0.0, 1.1, 0.1, 0.1]
 nls_c = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_c)))
 opt_c = solve(NonlinearLeastSquaresProblem(nls_c, p0_c, (trans_KRp, po_conv, fitdat_c)), LevenbergMarquardt())
 
-inverse(trans_KRp, transform(trans_KRp, opt_c.u))
 conv_prof = gen_sol_pd(opt_c.u, trans_KRp, po_conv)
 
 begin
@@ -125,8 +124,7 @@ trans_Rp = Rp_transform_basic(R0, A1, A2)
 trans_KKBB = merge(trans_K, trans_KBB)
 trans_KKBBRp = merge(trans_KKBB, trans_Rp)
 nls_mw = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_mw)))
-p0_mw = [2.0, 1.0, -5.1, -1.5] # obj_expT 220.8
-p0_mw = [-1.0, 0.0, -1.1, -2.0] # eventually: obj_expT 141
+p0_mw = [0.1, 1.1, -1.1, -2.0] 
 p0_mwRp = [2.0, 1.0, -0.1, -1.0, -1.0, 0.0, 4.0 ] 
 tsol = gen_sol_pd(p0_mwRp, trans_KKBBRp, po_mw)
 obj_expT(tsol, fitdat_mw, verbose=true)
