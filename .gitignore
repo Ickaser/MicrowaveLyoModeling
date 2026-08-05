@@ -5,8 +5,12 @@
 *.tar
 # Plots
 *.pdf
-*.png
-*.svg
+# Allow .svg and .png files to get checked in if outside the plots directory
+plots/*.png
+plots/*.svg
 *.mp4
 # Slides
 *.pptx
+
+# a hanger-on used for isolating bugs to report to open-source maintainers
+*/mwe.jl 

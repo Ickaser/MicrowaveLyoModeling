@@ -2,6 +2,7 @@
 
 [![](https://zenodo.org/badge/DOI/10.5281/zenodo.17469773.svg)](https://doi.org/10.5281/zenodo.17469773)
 
+## Description
 This repository provides the code and data for [Wheeler et al., 2026](https://doi.org/10.1186/s41120-026-00173-3), as Julia package called `MicrowaveLyoModeling`. In the spirit of reproducibility, it uses the package DrWatson.jl. 
 
 This project is structured as follows:
@@ -19,6 +20,7 @@ This project is structured as follows:
   - NonlinearSolve
   - OptimizationOptimJL
 
+## Reproducing
 To (locally) reproduce this project, do the following:
 
 1. Download this repository, which includes both the data (mostly in `data/exp_raw`) and the analysis code (mostly in the `scripts` folder).
@@ -46,6 +48,9 @@ This will produce all the graphs in the `plots` folder, as well as putting fit o
 To walk through a particular case, first run `scripts/postprocess_sugars.jl`, which preps all experimental data for analysis, then run the script of interest. I recommend using [VSCode with the Julia extension](https://code.visualstudio.com/docs/languages/julia) to interactively run a script in order. This will generate some intermediate plots that I do not save for publication, but that are useful for closer inspection.
 
 The level set simulations take longer to run, so they are left separate. They are included in `scripts/LS_M1.jl`, `scripts/LS_M1_porevar.jl`, and `scripts/LS_error_order.jl`.
+
+## Data
+The experimental data analyzed here is described in more detail in the full journal article (providing formulations and experimental apparatus, etc.). Within the folder `data/exp_raw`, subfolders by experimental case contain an individual README noting which data files provide which data and show the figures from the article which report that data.
 
 ## License
 
