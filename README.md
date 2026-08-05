@@ -2,8 +2,9 @@
 
 [![](https://zenodo.org/badge/DOI/10.5281/zenodo.17469773.svg)](https://doi.org/10.5281/zenodo.17469773)
 
+This repository provides the code and data for [Wheeler et al., 2026](https://doi.org/10.1186/s41120-026-00173-3), published in AAPS Open, as a Julia package called `MicrowaveLyoModeling`. In the spirit of reproducibility, it uses the package DrWatson.jl. 
+
 ## Description
-This repository provides the code and data for [Wheeler et al., 2026](https://doi.org/10.1186/s41120-026-00173-3), as Julia package called `MicrowaveLyoModeling`. In the spirit of reproducibility, it uses the package DrWatson.jl. 
 
 This project is structured as follows:
 - The lumped capacitance model is implemented in [LyoPronto.jl](https://lyohub.github.io/LyoPronto.jl/dev/), a package which is registered in the general Julia registry (installable by `]add LyoPronto`).
