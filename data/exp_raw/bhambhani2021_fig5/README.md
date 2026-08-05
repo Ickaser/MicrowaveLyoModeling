@@ -13,4 +13,4 @@ The original figure is:
 ![original figure](bhambhani2021_fig5.png)
 
 The replotted version with model fit, noting that the left (conventional) is panel (b) of the original and the center (microwave) is panel (a) of the original:
-![model fit](bhambhnai2021_fit.svg)
+![model fit](bhambhani2021_fit.svg)
