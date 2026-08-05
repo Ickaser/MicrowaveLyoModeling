@@ -60,7 +60,7 @@ prob = ODEProblem(params_base)
 
 
 trans_KBB = KBB_transform_bounded(Kvwf, Bf, Bvw)
-err_nls = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
+err_nls = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
 p0 = [2.0, 3.8, 0.1]
 tsol = gen_sol_pd(p0, trans_KBB, params_base)
 modrftplot(tsol)
@@ -87,7 +87,7 @@ end
 
 # Tune with same model, but also fitting  a1-a2
 
-aa_trans = as((;Rp=as((R0=Constant(Rp.R0), A1=TVScale(Rp.A1) ∘ TVExp(), A2=TVScale(0.01u"cm^-1") ∘ TVExp()))))
+aa_trans = as((;Rp=as(RpFormFit, (Constant(Rp.R0), TVScale(Rp.A1) ∘ TVExp(), TVScale(0.01u"cm^-1") ∘ TVExp()))))
 trans_KBBaa = merge(trans_KBB, aa_trans)
 
 p0_3b = vcat(opt3.u, [0.0, -1.0])
@@ -114,7 +114,7 @@ p0_2 = [3.0, 3.0, -1, -1]
 # ub2 = [10.0, 7.0, 7.0, 3.0]
 # lb2 = -ub2
 # opt2 = solve(OptimizationProblem(objf_2, p0_2, (params_base, fitdat), lb=lb2, ub=ub2), NelderMead())
-err_nls_2 = NonlinearFunction{true}(resid_prototype=zeros(num_errs(fitdat))) do resid, fitlog, tpf
+err_nls_2 = NonlinearFunction{true, SciMLBase.FullSpecialize}(resid_prototype=zeros(num_errs(fitdat))) do resid, fitlog, tpf
     sol = gen_sol_rf_LC2(fitlog, tpf...)
     LyoPronto.err_expT!(resid, sol, tpf[3])
 end
@@ -140,7 +140,7 @@ p0_1 = copy(opt2.u)
 # opt1 = solve(OptimizationProblem(objf_1, p0_1, (params_base, fitdat), lb=lb1, ub=ub1), NelderMead())
 # opt1 = solve(OptimizationProblem(objf_1, p0_1, (params_base, fitdat)), NelderMead(), show_trace=true, g_tol=1e-2)
 
-err_nls_1 = NonlinearFunction{true}(resid_prototype=zeros(num_errs(fitdat))) do resid, fitlog, tpf
+err_nls_1 = NonlinearFunction{true, SciMLBase.FullSpecialize}(resid_prototype=zeros(num_errs(fitdat))) do resid, fitlog, tpf
     sol = gen_sol_rf_LC1(fitlog, tpf...)
     LyoPronto.err_expT!(resid, sol, tpf[3])
 end
@@ -178,7 +178,7 @@ sol_sr = solve(prob_sr, Rosenbrock23(autodiff=AutoFiniteDiff());  callback=end_d
 # p0_sr = [0, 0.1, 0.1, 0.1]
 # transform(trans_KBBα, p0_sr)
 
-# err_nls_sr = NonlinearFunction{true}(resid_prototype=zeros(num_errs(fit_sr))) do resid, fitlog, tpf
+# err_nls_sr = NonlinearFunction{true, SciMLBase.FullSpecialize}(resid_prototype=zeros(num_errs(fit_sr))) do resid, fitlog, tpf
 #     sol = gen_sol_rf_LC1(fitlog, tpf...)
 #     LyoPronto.err_expT!(resid, sol, tpf[3])
 # end
@@ -223,7 +223,7 @@ begin
 pl_sr, pl_lc1, pl_lc2, pl_lc3 = map(sols, modelnames) do sol, modname
     pl = blankplot_hrC(ylims=(-42, 40), xlims=(0, 12.45))
     plot!(fitdat_less,nmarks=20, labsuffix=", experiment")
-    modrftplot!(sol, trimend=1, sampmarks=false)
+    modrftplot!(sol, trimend=1)
     tendplot!(fitdat.t_end, ls=:dash, label="")
     plot!(title="LC-"*modname, legend=:none, )
 end

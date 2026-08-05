@@ -90,9 +90,10 @@ trans_KRp = KRp_transform_basic(K_shf_c(0), R0, A1, A2)
 p0_c = [0.0, 1.1, 0.1, 0.1]
 
 
-nls_c = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_c)))
+nls_c = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_c)))
 opt_c = solve(NonlinearLeastSquaresProblem(nls_c, p0_c, (trans_KRp, po_conv, fitdat_c)), LevenbergMarquardt())
 
+inverse(trans_KRp, transform(trans_KRp, opt_c.u))
 conv_prof = gen_sol_pd(opt_c.u, trans_KRp, po_conv)
 
 begin
@@ -123,7 +124,7 @@ trans_K = K_transform_basic(K_shf_mw(0))
 trans_Rp = Rp_transform_basic(R0, A1, A2)
 trans_KKBB = merge(trans_K, trans_KBB)
 trans_KKBBRp = merge(trans_KKBB, trans_Rp)
-nls_mw = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_mw)))
+nls_mw = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_mw)))
 p0_mw = [2.0, 1.0, -5.1, -1.5] # obj_expT 220.8
 p0_mw = [-1.0, 0.0, -1.1, -2.0] # eventually: obj_expT 141
 p0_mwRp = [2.0, 1.0, -0.1, -1.0, -1.0, 0.0, 4.0 ] 
@@ -159,8 +160,8 @@ save(datadir("exp_pro", "bhambhani2021_fit_params.jld2"),
     # "mw"=>transform(trans_KKBB, opt_mw.u)))
     "mw"=>transform(trans_KKBBRp, opt_mw.u)))
 
-Rp_conv = RpFormFit(transform(trans_KRp, opt_c.u).Rp...)
-Rp_mw = RpFormFit(transform(trans_KKBBRp, opt_mw.u).Rp...)
+Rp_conv = transform(trans_KRp, opt_c.u).Rp
+Rp_mw = transform(trans_KKBBRp, opt_mw.u).Rp
 l = range(0u"cm", stop=h_f0|>u"cm", length=101)
 
 begin
@@ -189,7 +190,7 @@ plot!(ylabel="Vial Heating\n", xlim=(0, 5), ylim=(0, 0.25), legend=:topright)
 pl_P = plot(xlim=(0,5), xunit=u"hr", yunit=u"W", xlabel="Time", ylabel="MW Per\nVial", unitformat=:square, )
 plot!(P_per_vial, label="", fillrange=[0], lw=0, markeralpha=0, c=:red)
 plot!(pl_q, xticks=(0:5, []), xlabel="", bottom_margin=-5Plots.px)
-pl_Rp = plot(ylabel="R_p", xlabel=L"h_d", yunitformat=(l,u)->"\$$l\$\n["*latexify(u)*"]", xunitformat=:square)
+pl_Rp = plot(u"cm", u"cm^2*hr*Torr/g", ylabel="R_p", xlabel=L"h_d", yunitformat=(l,u)->"\$$l\$\n["*latexify(u)*"]", xunitformat=:square)
 plot!(l, Rp_conv.(l), label="conv")
 plot!(l, Rp_mw.(l), label="MW", legend=:right, bottom_margin=20Plots.px)
 plot!(ylim=(0, 5), )
@@ -202,7 +203,7 @@ plot(plc, plmw, extrapls, layout=(1,3), size=(1000,400))
 end
 
 savefig(plotsdir("bhambani2021_fit.svg"))
-# savefig(plotsdir("bhambani2021_fit.pdf"))
+savefig(plotsdir("bhambani2021_fit.pdf"))
 
 
 # ------------

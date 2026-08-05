@@ -27,7 +27,7 @@ trans = as((Bf = TVScale(7e7u"Ω/m^2") ∘ TVScale(1e2) ∘ TVLogistic() ∘ TVS
 p0 = [1.0, -1.0]
 # objf = OptimizationFunction(obj_pd, AutoForwardDiff(chunksize=2))
 # @time objf(p0, (trans, po_M4, fitdat))
-nls_M4 = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
+nls_M4 = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
 opt = solve(NonlinearLeastSquaresProblem(nls_M4, p0, (trans, po_M4, fitdat)), LevenbergMarquardt())
 prof_RF = gen_sol_pd(opt.u, trans, po_M4)
 

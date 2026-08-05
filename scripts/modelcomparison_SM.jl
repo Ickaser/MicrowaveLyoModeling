@@ -86,9 +86,9 @@ end
 # opt_KRp = solve(OptimizationProblem(objf_KRp, p0_KRp, (po_conv, fitdat_conv)), optalg)
 # conv_prof = gen_sol_KRp(opt_KRp.u, po_conv)
 
-nls_SM1 = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_conv)))
+nls_SM1 = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat_conv)))
 opt_Rp = solve(NonlinearLeastSquaresProblem(nls_SM1, p0_Rp, (trans_Rp, po_conv, fitdat_conv)), LevenbergMarquardt(), reltol=1e-8)
-nls_SM1_lc = NonlinearFunction{true}((du, x,tpf)->LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3]), resid_prototype=zeros(num_errs(fitdat_conv)))
+nls_SM1_lc = NonlinearFunction{true, SciMLBase.FullSpecialize}((du, x,tpf)->LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3]), resid_prototype=zeros(num_errs(fitdat_conv)))
 opt_Rp_lc = solve(NonlinearLeastSquaresProblem(nls_SM1_lc, p0_Rp, (trans_Rp, polc_conv, fitdat_conv)), LevenbergMarquardt())
 # @time opt_Rp = solve(OptimizationProblem(objf_Rp, p0_Rp, (trans_Rp, porf_conv, fitdat_conv)), optalg)
 # @show RpFormFit(transform(trans_Rp, opt_Rp.u).Rp...)
@@ -119,7 +119,7 @@ reloaded_SM2 = load(datadir("exp_pro", "SM2_processed.jld2"))
 
 # ---- Set up model for RF
 # @info "Kv" Kshf_fit Kshf(pch(0))
-Rp = setproperties(Rpg, transform(trans_Rp, opt_Rp.u).Rp)
+Rp = transform(trans_Rp, opt_Rp.u).Rp
 
 
 P_per_vial = RampedVariable(25u"W"/30*0.54)
@@ -140,7 +140,7 @@ trans_KBB = KBB_transform_bounded(K_vwf, B_f, B_vw)
 
 # gensolrf_SM = (x,tpf)->gen_sol_pd(x, tpf...; u0=u0_rf)
 # obj_SM(x,p) = obj_expT(gensolrf_SM(x, p), p[end], tweight=1)
-nls_SM2 = NonlinearFunction{true}((du, x,tpf)->LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3], tweight=1), resid_prototype=zeros(num_errs(fitdat_rf)))
+nls_SM2 = NonlinearFunction{true, SciMLBase.FullSpecialize}((du, x,tpf)->LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3], tweight=1), resid_prototype=zeros(num_errs(fitdat_rf)))
 
 p0_rf = [1, 5.0, -1.0]
 tsol = gensol(p0_rf, (trans_KBB, po_rf))

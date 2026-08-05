@@ -56,7 +56,7 @@ end
 
 # --------------- Perform the optimization
 trans_KBB = KBB_transform_bounded(Kvwf, Bf, Bvw)
-nls_M1 = NonlinearFunction{true}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
+nls_M1 = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_pd!, resid_prototype=zeros(num_errs(fitdat)))
 p0 = [3.0, 3.0, 0.3]
 tsol = gen_sol_pd(p0, trans_KBB, params_base)
 modrftplot(tsol)

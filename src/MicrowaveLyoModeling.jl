@@ -18,7 +18,7 @@ using Reexport
 @reexport using DataInterpolations: LinearInterpolation, ExtrapolationType, ConstantInterpolation, integral
 @reexport using Accessors
 @reexport using PrettyTables
-using PrecompileTools
+using SciMLBase: FullSpecialize
 using SpecialFunctions: besselj0, besselj1
 using Roots
 using Dates
@@ -27,6 +27,5 @@ include(srcdir("plotrecipes.jl"))
 include(srcdir("braatz.jl"))
 include(srcdir("LC_alternate.jl"))
 include(srcdir("exp_data_str.jl"))
-# include(srcdir("precompilation.jl"))
 
 end

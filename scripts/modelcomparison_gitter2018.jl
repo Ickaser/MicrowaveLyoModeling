@@ -7,21 +7,33 @@
 
 plot_defaults_mlm()
 
-# ------------------------------------------------
-# Figure 1a from Gitter 2019
-MWdat_a = map(row->(t=row.t*u"hr", P=row.P*u"W"), CSV.read(datadir("exp_raw", "gitter2019_fig1a", "gitter2019_MW.csv"), Table))
-Tdat_a = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "gitter2019_fig1a", "gitter2019_T.csv"), Table))
-pdat_a = map(row->(t=row.t*u"hr", pch=row.pch*u"μbar"|>u"mTorr"), CSV.read(datadir("exp_raw", "gitter2019_fig1a", "gitter2019_pch.csv"), Table))
+# ----------------------------------------
+# FIgure 2a from Gitter 2018
+Tdat_a = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "gitter2018_fig2a", "Tp.csv"), Table))
+pchdat_a = map(row->(t=row.t*u"hr", pch=row.pch*u"mbar"|>u"mTorr"), CSV.read(datadir("exp_raw", "gitter2018_fig2a", "pch.csv"), Table))
+Tshdat_a = map(row-> (t=row.t*u"hr", Tsh=row.T*u"°C"), CSV.read(datadir("exp_raw", "gitter2018_fig2a", "Tsh.csv"), Table))
+pch_a = RampedVariable(0.1u"mbar"|>u"mTorr")
+Tsh_a = RampedVariable([-50, -20]u"degC" .|> u"K", 0.2u"K/minute") 
+# @df Tshdat_a plot(:t .- :t[1], :Tsh)
+# plot!(Tsh_a, tmax=10u"hr")
 
-P_a = LinearInterpolation(MWdat_a.P, MWdat_a.t, extrapolation_right=ExtrapolationType.Constant)
-integral(P_a, P_a.t[end])/P_a.t[end] # Average power: 39W
-pch_a = LinearInterpolation(pdat_a.pch, pdat_a.t, extrapolation_right=ExtrapolationType.Constant)
-# plot(P_a, ylim=(0, 120))
-# plot(pch_a)
-
+# TODO
 fitdat_a = @df Tdat_a PrimaryDryFit(:t[:T .<-20u"°C"], :T[:T .< -20u"°C"] .|> u"K", Tvws=maximum(Tdat_a.T)|>u"K")
 fitdat_a_time = @df Tdat_a PrimaryDryFit(:t[:T .<-20u"°C"], :T[:T .< -20u"°C"] .|> u"K", maximum(Tdat_a.T)|>u"K", (6.0u"hr", 10.0u"hr"))
 # plot(fitdat_a_time)
+
+# ------------------------------------------------
+# Figure 2b from Gitter 2018
+MWdat_b = map(row->(t=row.t*u"hr", P=row.P*u"W"), CSV.read(datadir("exp_raw", "gitter2018_fig2b", "P_nom_setpts.csv"), Table))
+Tdat_b = map(row->(t=row.t*u"hr", T=row.T*u"°C"), CSV.read(datadir("exp_raw", "gitter2018_fig2b", "Tp.csv"), Table))
+pdat_b = map(row->(t=row.t*u"hr", pch=row.pch*u"mbar"|>u"mTorr"), CSV.read(datadir("exp_raw", "gitter2018_fig2b", "pch.csv"), Table))
+
+P_b = ConstantInterpolation(MWdat_b.P, MWdat_b.t; dir=:left, extrapolation=ExtrapolationType.Constant)
+integral(P_b, P_b.t[end])/P_b.t[end] # Average power: 39W
+pch_b = LinearInterpolation(pdat_b.pch, pdat_b.t, extrapolation_right=ExtrapolationType.Constant)
+# plot(P_b)
+plot(pch_b, ylim=(0, 25))
+
 
 # ----------------------------------------
 # # Figure 1b from Gitter 2019
@@ -120,6 +132,8 @@ u0_b = ustrip.([u"g", u"K", u"K"], [m_f0, fitdat_b.Tfs[1][1], fitdat_b.Tfs[1][1]
 u0_c = ustrip.([u"g", u"K", u"K"], [m_f0, fitdat_c.Tfs[1][1], fitdat_c.Tfs[1][1]])
 p0 = [0.5, -5, -5.5]
 p0_KRp = vcat(p0, [-0.1, 0.0, 0.0, 1.0])
+
+gensol(p0, (trans_KBB, params_a, fitdat_a, u0_a))
 
 nls_g = (du,x,tpfu)->LyoPronto.err_expT!(du, gensol(x, tpfu), tpfu[3])
 err_nls_a = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_g, resid_prototype=zeros(num_errs(fitdat_a)))

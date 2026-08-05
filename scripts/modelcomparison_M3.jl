@@ -68,7 +68,7 @@ plot!(fitdat)
 # objf_M3 = OptimizationFunction(obj_M3, AutoForwardDiff(chunksize=3))
 # @time opt = solve(OptimizationProblem(objf_M3, p0, (trans_KBB, po, fitdat)), optalg, )
 nls_M3(du, x, tpf) = LyoPronto.err_expT!(du, gensol(x, tpf), tpf[3], tweight=1)
-nlsf_M3 = NonlinearFunction{true}(nls_M3, resid_prototype=zeros(num_errs(fitdat)))
+nlsf_M3 = NonlinearFunction{true, SciMLBase.FullSpecialize}(nls_M3, resid_prototype=zeros(num_errs(fitdat)))
 @time opt = solve(NonlinearLeastSquaresProblem(nlsf_M3, p0, (trans_KBB, po, fitdat)), LevenbergMarquardt())
 prof_RF = gensol(opt.u, (trans_KBB, po, fitdat));
 
